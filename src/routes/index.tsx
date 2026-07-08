@@ -20,6 +20,8 @@ import {
   productsByCategory,
 } from "@/lib/mock-data";
 import { getAffiliateUrl } from "@/lib/affiliate";
+import { getProductImageUrl } from "@/lib/affiliate";
+import { useEffect } from "react";
 
 export const Route = createFileRoute("/")({
   component: HomePage,
@@ -37,6 +39,11 @@ function HomePage() {
   const [activeTv, setActiveTv] = useState<string>(tvGuides[0]?.slug ?? "");
   const activeGuide = tvGuides.find((g) => g.slug === activeTv) ?? tvGuides[0];
   const activeProduct = activeGuide ? findProduct(activeGuide.productSlugs[0]) : undefined;
+  const [activeProductImg, setActiveProductImg] = useState<string>("");
+  useEffect(() => {
+    if (activeProduct) setActiveProductImg(getProductImageUrl(activeProduct.slug));
+    else setActiveProductImg("");
+  }, [activeProduct?.slug]);
 
   const topPicks = productsByCategory("smart-tvs").slice(0, 3);
 
