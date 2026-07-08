@@ -1,0 +1,11 @@
+# Netlify build configuration for TechRadar Brasil (TanStack Start + Nitro netlify preset).
+[build]
+  command = "bun run build"
+  publish = "dist/client"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# The Nitro `netlify` preset emits the SSR handler as a Netlify Function
+# and writes the required redirects into the publish directory, so no
+# additional [[redirects]] block is needed here.
