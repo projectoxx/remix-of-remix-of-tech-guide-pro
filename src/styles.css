@@ -6,9 +6,8 @@
 
 /*
  * TechRadar Brasil — Design System
- * Palette: Neon Mint (deep navy + surface teal + mint accent + highlight)
- * Typography: Sora (display) + Manrope (body) + JetBrains Mono (mono)
- * Sensory metaphor: precision oscilloscope. Editorial + laboratory.
+ * Editorial de confiança. Base branca, azul institucional #0f4c81, âmbar #f59e0b nos CTAs.
+ * Tipografia: Inter (única). Look inspirado em Wirecutter / Zoom / Buscapé.
  */
 
 @theme inline {
@@ -56,44 +55,45 @@
   --color-surface-2: var(--surface-2);
   --color-highlight: var(--highlight);
   --color-hairline: var(--hairline);
-  --font-display: "Sora", ui-sans-serif, system-ui, sans-serif;
-  --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  --font-display: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Lora", ui-serif, Georgia, serif;
+  --font-mono: ui-monospace, SFMono-Regular, "JetBrains Mono", monospace;
   --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
 }
 
 :root {
-  /* Dark is the default — portal premium noturno. */
+  /* Light editorial — clareza e confiança. */
   --radius: 0.5rem;
-  --background: oklch(0.183 0.043 253.5);           /* #0d1b2a */
-  --foreground: oklch(0.984 0.003 247.858);         /* #f8fafc */
-  --surface: oklch(0.221 0.052 252.5);              /* #12263a */
-  --surface-2: oklch(0.163 0.038 254);              /* deeper */
-  --highlight: oklch(0.92 0.183 168);               /* #73ffb8 */
-  --hairline: oklch(1 0 0 / 8%);
+  --background: #ffffff;
+  --foreground: #0f172a;              /* slate-900 */
+  --surface: #f8fafc;                 /* slate-50  */
+  --surface-2: #f1f5f9;               /* slate-100 */
+  --highlight: #f59e0b;               /* amber-500 — CTA / preço */
+  --hairline: #e2e8f0;                /* slate-200 */
 
   --card: var(--surface);
   --card-foreground: var(--foreground);
   --popover: var(--surface);
   --popover-foreground: var(--foreground);
-  --primary: oklch(0.79 0.14 172);                  /* #2dd4a8 mint */
-  --primary-foreground: oklch(0.183 0.043 253.5);
+  --primary: #0f4c81;                 /* azul institucional */
+  --primary-foreground: #ffffff;
   --secondary: var(--surface);
   --secondary-foreground: var(--foreground);
-  --muted: oklch(1 0 0 / 5%);
-  --muted-foreground: oklch(0.72 0.03 250);         /* #94a3b8 */
-  --accent: oklch(0.79 0.14 172);
-  --accent-foreground: oklch(0.183 0.043 253.5);
-  --destructive: oklch(0.65 0.22 25);
-  --destructive-foreground: oklch(0.984 0.003 247.858);
-  --border: oklch(1 0 0 / 8%);
-  --input: oklch(1 0 0 / 10%);
-  --ring: oklch(0.79 0.14 172);
-  --chart-1: oklch(0.79 0.14 172);
-  --chart-2: oklch(0.92 0.183 168);
-  --chart-3: oklch(0.65 0.18 220);
-  --chart-4: oklch(0.78 0.16 85);
-  --chart-5: oklch(0.7 0.2 20);
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b;        /* slate-500 */
+  --accent: #0f4c81;
+  --accent-foreground: #ffffff;
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+  --border: #e2e8f0;
+  --input: #e2e8f0;
+  --ring: #0f4c81;
+  --chart-1: #0f4c81;
+  --chart-2: #f59e0b;
+  --chart-3: #16a34a;
+  --chart-4: #dc2626;
+  --chart-5: #64748b;
   --sidebar: var(--surface);
   --sidebar-foreground: var(--foreground);
   --sidebar-primary: var(--primary);
@@ -104,7 +104,7 @@
   --sidebar-ring: var(--ring);
 }
 
-.dark { /* no-op — dark é o padrão */ }
+.dark { /* light é o padrão — sem tema escuro por ora */ }
 
 @layer base {
   * {
@@ -121,7 +121,7 @@
 
   h1, h2, h3, h4, h5 {
     font-family: var(--font-display);
-    letter-spacing: -0.02em;
+    letter-spacing: -0.015em;
   }
 
   ::selection {
@@ -137,20 +137,45 @@
 }
 
 @utility eyebrow {
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
   font-size: 0.6875rem;
-  letter-spacing: 0.15em;
+  font-weight: 700;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--color-muted-foreground);
+  color: var(--color-accent);
 }
 
 @utility card-lab {
-  background: var(--color-surface);
+  background: #ffffff;
   border: 1px solid var(--color-hairline);
-  transition: border-color 300ms var(--ease-out-expo),
-              transform 300ms var(--ease-out-expo);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  transition: box-shadow 250ms var(--ease-out-expo),
+              border-color 250ms var(--ease-out-expo),
+              transform 250ms var(--ease-out-expo);
 }
 .card-lab:hover {
-  border-color: color-mix(in oklab, var(--color-accent) 40%, transparent);
+  border-color: color-mix(in oklab, var(--color-accent) 45%, transparent);
+  box-shadow: 0 10px 24px -12px rgba(15, 76, 129, 0.18);
   transform: translateY(-2px);
+}
+
+@utility btn-affiliate {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: var(--color-highlight);
+  color: #1f1300;
+  font-weight: 800;
+  padding: 0.875rem 1.25rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 8px 20px -8px rgba(245, 158, 11, 0.6);
+  transition: transform 200ms var(--ease-out-expo), filter 200ms;
+}
+.btn-affiliate:hover { filter: brightness(1.05); transform: translateY(-1px); }
+
+@utility trust-serif {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  letter-spacing: -0.02em;
 }

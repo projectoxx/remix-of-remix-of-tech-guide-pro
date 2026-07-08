@@ -1,18 +1,22 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, TrendingUp, Zap, Clock } from "lucide-react";
-import heroImage from "@/assets/hero-oled.jpg";
+import { useMemo, useState } from "react";
+import {
+  ArrowRight,
+  ExternalLink,
+  ShieldCheck,
+  Star,
+  BadgeCheck,
+  Timer,
+} from "lucide-react";
 import { SiteHeader } from "@/components/site/site-header";
 import { SiteFooter } from "@/components/site/site-footer";
 import { SectionHeader } from "@/components/site/section-header";
-import { ProductTile } from "@/components/site/product-tile";
-import { ScoreBadge, BadgeChip } from "@/components/site/score-badge";
 import {
-  articles,
   categories,
-  comparisons,
   formatBRL,
+  guides,
   products,
-  rankings,
+  findProduct,
 } from "@/lib/mock-data";
 
 export const Route = createFileRoute("/")({
@@ -20,81 +24,213 @@ export const Route = createFileRoute("/")({
 });
 
 function HomePage() {
-  const featured = products[0];
-  const trending = products.slice(1, 5);
-  const deals = products.slice(0, 4);
-  const bestValue = products.find((p) => p.badge === "custo-beneficio")!;
-  const topRanking = rankings[1];
-  const topComparison = comparisons[0];
+  const featuredGuide = guides[0];
+  const featuredProduct = findProduct(featuredGuide.productSlugs[0])!;
+  const otherGuides = guides.slice(1);
+
+  // Abas por categoria (só as que têm guias)
+  const guideCategories = useMemo(() => {
+    const set = new Set(guides.map((g) => g.categorySlug));
+    return categories.filter((c) => set.has(c.slug));
+  }, []);
+  const [activeCat, setActiveCat] = useState<string>("todos");
+  const visibleGuides =
+    activeCat === "todos" ? guides : guides.filter((g) => g.categorySlug === activeCat);
+
+  const topPicks = products.slice(0, 3);
 
   return (
     <div className="min-h-screen bg-background">
       <SiteHeader />
 
-      <main className="container-page py-10 md:py-14 space-y-20">
+      <main>
         {/* HERO */}
-        <section className="grid lg:grid-cols-12 gap-8 items-center">
-          <div className="lg:col-span-7 relative overflow-hidden rounded-sm border border-hairline">
-            <img
-              src={heroImage}
-              alt={featured.name}
-              width={1600}
-              height={1000}
-              className="w-full aspect-video object-cover"
-            />
-            <div className="absolute inset-0 bg-linear-to-t from-background via-background/40 to-transparent" />
-            <div className="absolute bottom-4 left-4 flex gap-2">
-              <BadgeChip variant="accent">Editor's Choice</BadgeChip>
-              <BadgeChip>Review / TVs</BadgeChip>
-            </div>
-          </div>
-          <div className="lg:col-span-5 space-y-6">
-            <div className="flex items-center gap-3">
-              <span className="eyebrow">Análise em destaque</span>
-              <span className="size-1 rounded-full bg-accent animate-pulse" />
-              <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">há 2h</span>
-            </div>
-            <h1 className="font-display text-4xl md:text-5xl font-extrabold tracking-tight leading-[1.05] text-balance">
-              A masterclass em OLED: <span className="text-accent">Sony A95L</span> redefine o que é brilho.
-            </h1>
-            <p className="text-muted-foreground text-lg leading-relaxed text-pretty">
-              {featured.summary}
-            </p>
-            <div className="flex items-end gap-4 pt-2">
-              <div className="flex items-baseline gap-1">
-                <ScoreBadge score={featured.score} size="xl" />
-                <span className="font-mono text-xs text-muted-foreground pb-3">/10</span>
+        <section className="border-b border-hairline bg-surface">
+          <div className="container-page py-14 md:py-20 grid lg:grid-cols-12 gap-10 items-center">
+            <div className="lg:col-span-7 space-y-6">
+              <div className="inline-flex items-center gap-2 text-xs font-semibold text-accent bg-accent/10 px-3 py-1.5 rounded-full">
+                <ShieldCheck className="size-3.5" /> Análises independentes · atualizadas em 2026
               </div>
+              <h1 className="trust-serif text-4xl md:text-6xl leading-[1.05] text-balance">
+                Escolha o eletrônico certo <span className="text-accent">antes</span> de comprar.
+              </h1>
+              <p className="text-lg md:text-xl text-foreground/70 leading-relaxed max-w-2xl text-pretty">
+                Guias objetivos, comparativos honestos e nota final clara. Respondemos exatamente às perguntas que
+                você faria no Google — e te levamos direto à melhor oferta no Mercado Livre.
+              </p>
+              <div className="flex flex-wrap items-center gap-3 pt-2">
+                <Link
+                  to="/guia/$slug"
+                  params={{ slug: featuredGuide.slug }}
+                  className="btn-affiliate"
+                >
+                  Ver o guia da vez <ArrowRight className="size-4" />
+                </Link>
+                <Link
+                  to="/rankings"
+                  className="inline-flex items-center gap-2 px-5 py-3 font-semibold text-foreground border border-hairline rounded-lg hover:border-accent hover:text-accent transition-colors"
+                >
+                  Rankings 2026
+                </Link>
+              </div>
+              <div className="flex flex-wrap gap-x-6 gap-y-2 pt-6 text-sm text-muted-foreground">
+                <span className="inline-flex items-center gap-2"><BadgeCheck className="size-4 text-accent" /> +300 produtos avaliados</span>
+                <span className="inline-flex items-center gap-2"><Star className="size-4 text-highlight" /> Nota real por critério</span>
+                <span className="inline-flex items-center gap-2"><Timer className="size-4 text-accent" /> Atualizado semanalmente</span>
+              </div>
+            </div>
+
+            {/* Guia em destaque card */}
+            <div className="lg:col-span-5">
               <Link
-                to="/produto/$slug"
-                params={{ slug: featured.slug }}
-                className="ml-auto inline-flex items-center gap-2 bg-foreground text-background px-5 py-3 font-display font-bold uppercase text-sm tracking-tight hover:bg-accent transition-colors"
+                to="/guia/$slug"
+                params={{ slug: featuredGuide.slug }}
+                className="card-lab rounded-2xl p-6 md:p-8 block group"
               >
-                Ler review completo <ArrowRight className="size-4" />
+                <div className="eyebrow mb-3">Guia da semana · {featuredGuide.categoryName}</div>
+                <h2 className="trust-serif text-2xl md:text-3xl leading-tight mb-4 group-hover:text-accent transition-colors">
+                  {featuredGuide.question}
+                </h2>
+                <p className="text-foreground/70 text-sm leading-relaxed mb-6 line-clamp-3">
+                  {featuredGuide.intro}
+                </p>
+                <div className="flex items-center justify-between pt-4 border-t border-hairline">
+                  <div>
+                    <div className="text-xs text-muted-foreground">Top pick</div>
+                    <div className="font-semibold text-sm">{featuredProduct.name}</div>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-xs text-muted-foreground">a partir de</div>
+                    <div className="font-display font-extrabold text-xl text-foreground">
+                      {formatBRL(featuredProduct.priceMin)}
+                    </div>
+                  </div>
+                </div>
               </Link>
             </div>
           </div>
         </section>
 
-        {/* CATEGORIAS */}
-        <section>
+        {/* PERGUNTAS + ABAS */}
+        <section className="container-page py-14 md:py-20">
           <SectionHeader
-            eyebrow="Explore"
-            title="Categorias em destaque"
-            subtitle="Dados precisos, medições reais, zero hype. Todo produto passa pelo laboratório TechRadar."
+            eyebrow="As dúvidas mais buscadas"
+            title="Perguntas que resolvemos por você"
+            subtitle="Cada guia responde exatamente uma dúvida real — direto ao ponto, com produto recomendado e link para comprar."
           />
+
+          {/* Tabs */}
+          <div className="flex flex-wrap gap-2 mb-8">
+            <TabButton active={activeCat === "todos"} onClick={() => setActiveCat("todos")}>
+              Todos
+            </TabButton>
+            {guideCategories.map((c) => (
+              <TabButton key={c.slug} active={activeCat === c.slug} onClick={() => setActiveCat(c.slug)}>
+                {c.name}
+              </TabButton>
+            ))}
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {visibleGuides.map((g) => {
+              const p = findProduct(g.productSlugs[0]);
+              return (
+                <Link
+                  key={g.slug}
+                  to="/guia/$slug"
+                  params={{ slug: g.slug }}
+                  className="card-lab rounded-xl p-6 flex flex-col gap-4 group"
+                >
+                  <div className="flex items-center gap-2 text-xs">
+                    <span className="text-accent font-semibold">{g.categoryName}</span>
+                    <span className="text-muted-foreground">·</span>
+                    <span className="text-muted-foreground">
+                      {new Date(g.updatedAt).toLocaleDateString("pt-BR", { month: "short", year: "numeric" })}
+                    </span>
+                  </div>
+                  <h3 className="font-display font-bold text-lg leading-snug text-foreground group-hover:text-accent transition-colors">
+                    {g.question}
+                  </h3>
+                  <p className="text-sm text-foreground/70 line-clamp-2 flex-1">{g.intro}</p>
+                  {p && (
+                    <div className="flex items-center justify-between pt-3 border-t border-hairline">
+                      <div className="text-xs">
+                        <div className="text-muted-foreground">Top pick</div>
+                        <div className="font-semibold text-foreground">{p.brand}</div>
+                      </div>
+                      <div className="text-xs text-right">
+                        <div className="text-muted-foreground">a partir de</div>
+                        <div className="font-display font-extrabold text-base text-foreground">{formatBRL(p.priceMin)}</div>
+                      </div>
+                    </div>
+                  )}
+                  <span className="inline-flex items-center gap-1 text-sm text-accent font-semibold">
+                    Ler análise <ArrowRight className="size-4" />
+                  </span>
+                </Link>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* PRODUTOS EM DESTAQUE (com CTA Mercado Livre) */}
+        <section className="bg-surface border-y border-hairline">
+          <div className="container-page py-14 md:py-20">
+            <SectionHeader
+              eyebrow="Recomendados"
+              title="Os mais vendidos que valem a pena"
+              subtitle="Selecionamos entre os mais buscados no Mercado Livre apenas os que passaram no nosso teste."
+            />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+              {topPicks.map((p) => (
+                <article key={p.slug} className="card-lab rounded-xl p-6 flex flex-col gap-4">
+                  <div className="flex items-center justify-between">
+                    <div className="text-xs font-semibold text-accent uppercase tracking-wide">{p.categoryName}</div>
+                    <div className="inline-flex items-center gap-1 bg-highlight/15 text-foreground px-2 py-0.5 rounded-full text-xs font-bold">
+                      <Star className="size-3 fill-highlight text-highlight" /> {p.score.toFixed(1)}
+                    </div>
+                  </div>
+                  <h3 className="font-display font-bold text-lg leading-snug">
+                    <Link to="/produto/$slug" params={{ slug: p.slug }} className="hover:text-accent transition-colors">
+                      {p.name}
+                    </Link>
+                  </h3>
+                  <p className="text-sm text-foreground/70 line-clamp-3 flex-1">{p.summary}</p>
+                  <div className="pt-3 border-t border-hairline space-y-3">
+                    <div>
+                      <div className="text-xs text-muted-foreground">a partir de</div>
+                      <div className="font-display font-extrabold text-2xl text-foreground">
+                        {formatBRL(p.priceMin)}
+                      </div>
+                    </div>
+                    <a
+                      href={p.affiliateUrl}
+                      target="_blank"
+                      rel="sponsored nofollow noopener noreferrer"
+                      className="btn-affiliate w-full text-sm"
+                    >
+                      Ver no Mercado Livre <ExternalLink className="size-4" />
+                    </a>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* CATEGORIAS */}
+        <section className="container-page py-14 md:py-20">
+          <SectionHeader eyebrow="Navegue" title="Todas as categorias" />
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
             {categories.map((c) => (
               <Link
                 key={c.slug}
                 to="/categoria/$slug"
                 params={{ slug: c.slug }}
-                className="card-lab rounded-sm p-4 group"
+                className="card-lab rounded-lg p-4 group"
               >
-                <div className="font-mono text-[10px] tracking-widest text-muted-foreground uppercase mb-2">
-                  {c.count} reviews
-                </div>
-                <div className="font-display font-bold text-sm leading-tight group-hover:text-accent transition-colors">
+                <div className="text-[11px] text-muted-foreground mb-1">{c.count} reviews</div>
+                <div className="font-display font-semibold text-sm leading-tight group-hover:text-accent transition-colors">
                   {c.name}
                 </div>
               </Link>
@@ -102,197 +238,49 @@ function HomePage() {
           </div>
         </section>
 
-        {/* BENTO PRINCIPAL */}
-        <section className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-12 gap-4 auto-rows-[minmax(0,auto)]">
-          {/* Ranking */}
-          <div className="md:col-span-2 lg:col-span-6 card-lab p-6 md:p-8 rounded-sm">
-            <div className="flex items-center gap-2 mb-4">
-              <TrendingUp className="size-4 text-accent" />
-              <span className="eyebrow">Ranking / Semanal</span>
-            </div>
-            <h3 className="font-display font-extrabold text-2xl mb-6 leading-tight">
-              {topRanking.title}
-            </h3>
-            <ol className="space-y-3">
-              {topRanking.productSlugs.map((slug, i) => {
-                const p = products.find((x) => x.slug === slug)!;
-                return (
-                  <li key={slug}>
-                    <Link
-                      to="/produto/$slug"
-                      params={{ slug }}
-                      className="flex items-center gap-4 py-3 border-b border-hairline last:border-b-0 group"
-                    >
-                      <span className={`font-mono text-sm tabular-nums ${i === 0 ? "text-accent" : "text-muted-foreground"}`}>
-                        {String(i + 1).padStart(2, "0")}
-                      </span>
-                      <div className="flex-1 min-w-0">
-                        <div className="font-semibold text-sm truncate group-hover:text-accent transition-colors">
-                          {p.name}
-                        </div>
-                        <div className="text-xs text-muted-foreground">{p.brand} · {formatBRL(p.priceAvg)}</div>
-                      </div>
-                      <span className="bg-white/5 border border-hairline px-2 py-1 font-mono text-xs tabular-nums text-accent">
-                        {p.score.toFixed(1)}
-                      </span>
-                    </Link>
-                  </li>
-                );
-              })}
-            </ol>
-            <Link to="/rankings" className="mt-6 inline-flex items-center gap-1 text-sm text-accent hover:underline">
-              Ver todos os rankings <ArrowRight className="size-4" />
-            </Link>
-          </div>
-
-          {/* Custo-benefício */}
-          <Link
-            to="/produto/$slug"
-            params={{ slug: bestValue.slug }}
-            className="md:col-span-2 lg:col-span-3 bg-accent text-background p-6 rounded-sm flex flex-col justify-between group min-h-52 hover:brightness-105 transition-all"
-          >
-            <div className="font-mono text-[10px] font-bold uppercase tracking-widest opacity-70">Best Value</div>
+        {/* CONFIANÇA / METODOLOGIA */}
+        <section className="bg-accent text-white">
+          <div className="container-page py-14 md:py-20 grid md:grid-cols-2 gap-10 items-center">
             <div>
-              <h3 className="font-display font-extrabold text-2xl leading-tight mb-2">
-                {bestValue.name}: performance flagship por menos.
-              </h3>
-              <p className="text-background/70 text-sm">{bestValue.summary.split(".")[0]}.</p>
+              <div className="text-xs font-bold uppercase tracking-widest text-white/70 mb-3">Como recomendamos</div>
+              <h2 className="trust-serif text-3xl md:text-4xl leading-tight mb-4">
+                Você compra melhor quando confia em quem indica.
+              </h2>
+              <p className="text-white/85 leading-relaxed">
+                Não aceitamos produtos gratuitos das marcas. Cada guia é reconstruído periodicamente com base em preço
+                atual, atualizações de firmware e feedback de leitores. Ganhamos comissão do Mercado Livre por indicações
+                — nunca do fabricante.
+              </p>
             </div>
-            <div className="flex items-baseline justify-between">
-              <span className="font-display font-extrabold text-3xl">{formatBRL(bestValue.priceAvg)}</span>
-              <span className="font-mono text-xs opacity-70">Nota {bestValue.score}</span>
+            <div className="grid grid-cols-2 gap-4">
+              <TrustStat n="4.9/5" label="Avaliação média dos leitores" />
+              <TrustStat n="+300" label="Produtos avaliados" />
+              <TrustStat n="7 anos" label="No mercado editorial" />
+              <TrustStat n="0" label="Publicidade paga por marcas" />
             </div>
-          </Link>
-
-          {/* Comparativo */}
-          <Link
-            to="/comparativo/$slug"
-            params={{ slug: topComparison.slug }}
-            className="md:col-span-2 lg:col-span-3 card-lab rounded-sm p-6 flex flex-col justify-between min-h-52 group"
-          >
-            <div className="eyebrow">Comparativo Direto</div>
-            <div>
-              <div className="font-display font-extrabold text-2xl italic text-accent leading-none mb-3">VS.</div>
-              <h3 className="font-display font-bold text-lg leading-tight group-hover:text-accent transition-colors">
-                {topComparison.title}
-              </h3>
-            </div>
-            <div className="flex items-center gap-2 text-sm text-accent">
-              Ver duelo completo <ArrowRight className="size-4" />
-            </div>
-          </Link>
-        </section>
-
-        {/* TRENDING */}
-        <section>
-          <SectionHeader
-            eyebrow="Sinal em alta"
-            title="Produtos em alta"
-            subtitle="Os produtos mais consultados e testados nas últimas 72 horas."
-            action={
-              <Link to="/rankings" className="text-sm text-accent hover:underline inline-flex items-center gap-1">
-                Ver rankings <ArrowRight className="size-4" />
-              </Link>
-            }
-          />
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {trending.map((p) => (
-              <ProductTile key={p.slug} product={p} />
-            ))}
-          </div>
-        </section>
-
-        {/* PROMOÇÕES */}
-        <section>
-          <SectionHeader
-            eyebrow="Radar de preços"
-            title="Promoções do dia"
-            subtitle="Alertas de menor preço em 90 dias. Verificamos historicamente antes de recomendar."
-            action={
-              <div className="flex items-center gap-2 font-mono text-xs text-muted-foreground uppercase tracking-widest">
-                <Clock className="size-3.5" />
-                Atualizado agora
-              </div>
-            }
-          />
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {deals.map((p) => (
-              <Link
-                key={p.slug}
-                to="/produto/$slug"
-                params={{ slug: p.slug }}
-                className="card-lab p-4 rounded-sm group"
-              >
-                <div
-                  className="aspect-square mb-4 rounded-sm relative overflow-hidden"
-                  style={{
-                    backgroundImage: `linear-gradient(135deg, ${p.gradient[0]}, ${p.gradient[1]}30)`,
-                  }}
-                >
-                  <div className="absolute inset-0 grid place-items-center text-foreground/25 font-display font-extrabold text-2xl">
-                    {p.brand}
-                  </div>
-                </div>
-                <div className="font-mono text-[10px] text-accent mb-1 uppercase tracking-widest">Mercado Livre</div>
-                <h4 className="font-bold text-sm mb-2 line-clamp-2 group-hover:text-accent transition-colors">{p.name}</h4>
-                <div className="flex items-baseline gap-2">
-                  <span className="font-display font-extrabold text-lg">{formatBRL(p.priceMin)}</span>
-                  <span className="text-xs text-muted-foreground line-through">{formatBRL(p.priceMax)}</span>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </section>
-
-        {/* ARTIGOS */}
-        <section>
-          <SectionHeader eyebrow="Editorial" title="Guias e artigos recentes" />
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {articles.map((a) => (
-              <article key={a.slug} className="group cursor-pointer">
-                <div className="aspect-[4/3] mb-4 bg-surface border border-hairline rounded-sm relative overflow-hidden">
-                  <div className="absolute inset-0 bg-linear-to-br from-accent/10 via-transparent to-highlight/10" />
-                  <div className="absolute inset-0 grid place-items-center text-4xl font-display font-extrabold text-foreground/10">
-                    {a.category}
-                  </div>
-                </div>
-                <div className="eyebrow mb-2">{a.category} · {a.readingMinutes} min</div>
-                <h3 className="font-display font-bold text-lg leading-snug group-hover:text-accent transition-colors">
-                  {a.title}
-                </h3>
-                <p className="text-sm text-muted-foreground mt-2 line-clamp-2">{a.excerpt}</p>
-                <div className="font-mono text-[10px] text-muted-foreground uppercase tracking-widest mt-3">
-                  Por {a.author}
-                </div>
-              </article>
-            ))}
           </div>
         </section>
 
         {/* NEWSLETTER */}
-        <section className="bg-accent text-background rounded-sm py-10 px-6 md:py-14 md:px-12 flex flex-col md:flex-row items-center gap-8 relative overflow-hidden">
-          <div className="absolute inset-y-0 right-0 w-1/2 opacity-15 pointer-events-none">
-            <Zap className="size-full" />
+        <section className="container-page py-14 md:py-20">
+          <div className="card-lab rounded-2xl p-8 md:p-12 flex flex-col md:flex-row items-center gap-8">
+            <div className="flex-1 space-y-2">
+              <h2 className="trust-serif text-2xl md:text-3xl">Alertas de preço, direto no seu e-mail.</h2>
+              <p className="text-foreground/70">
+                Toda sexta enviamos um resumo curto: quedas de preço no Mercado Livre, novos guias e o que evitar comprar.
+              </p>
+            </div>
+            <form className="w-full md:w-96 flex gap-2" onSubmit={(e) => e.preventDefault()}>
+              <input
+                type="email"
+                required
+                placeholder="seu@email.com"
+                aria-label="Seu e-mail"
+                className="flex-1 bg-white text-foreground px-4 py-3 rounded-lg border border-hairline outline-none focus:border-accent focus:ring-2 focus:ring-accent/20"
+              />
+              <button type="submit" className="btn-affiliate whitespace-nowrap">Assinar</button>
+            </form>
           </div>
-          <div className="flex-1 space-y-2 relative">
-            <h2 className="font-display text-3xl md:text-4xl font-extrabold tracking-tight">Receba o TechRadar.</h2>
-            <p className="text-background/80 font-medium">O resumo técnico essencial enviado todas as sextas — reviews, alertas de preço e vazamentos.</p>
-          </div>
-          <form className="w-full md:w-96 flex relative" onSubmit={(e) => e.preventDefault()}>
-            <input
-              type="email"
-              required
-              placeholder="seu@email.com"
-              aria-label="Seu e-mail"
-              className="flex-1 bg-background text-foreground px-4 py-3 rounded-l-sm border-0 outline-none focus:ring-2 ring-background/30"
-            />
-            <button
-              type="submit"
-              className="bg-background/15 hover:bg-background/25 text-background font-display font-extrabold px-6 uppercase text-sm border-l border-background/20 transition-colors rounded-r-sm"
-            >
-              Assinar
-            </button>
-          </form>
         </section>
       </main>
 
@@ -300,3 +288,38 @@ function HomePage() {
     </div>
   );
 }
+
+function TabButton({
+  active,
+  onClick,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={
+        "px-4 py-2 rounded-full text-sm font-semibold border transition-colors " +
+        (active
+          ? "bg-accent text-white border-accent"
+          : "bg-white text-foreground/70 border-hairline hover:border-accent/60 hover:text-accent")
+      }
+    >
+      {children}
+    </button>
+  );
+}
+
+function TrustStat({ n, label }: { n: string; label: string }) {
+  return (
+    <div className="bg-white/10 backdrop-blur-sm border border-white/15 rounded-lg p-5">
+      <div className="trust-serif text-3xl md:text-4xl text-white mb-1">{n}</div>
+      <div className="text-xs text-white/80 leading-snug">{label}</div>
+    </div>
+  );
+}
+

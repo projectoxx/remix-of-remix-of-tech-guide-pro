@@ -3,17 +3,20 @@ import { Search } from "lucide-react";
 import { Logo } from "./logo";
 import { categories } from "@/lib/mock-data";
 
-const primaryNav = categories.slice(0, 6);
+const primaryNav = categories.slice(0, 5);
 
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-50 bg-background/85 backdrop-blur-md border-b border-hairline">
+    <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-md border-b border-hairline">
       <div className="container-page h-16 flex items-center justify-between gap-6">
         <div className="flex items-center gap-8 min-w-0">
           <Link to="/" className="shrink-0 hover:opacity-90 transition-opacity">
             <Logo />
           </Link>
-          <nav className="hidden lg:flex items-center gap-5 text-[13px] font-medium uppercase tracking-wider text-muted-foreground min-w-0">
+          <nav className="hidden lg:flex items-center gap-6 text-[14px] font-semibold text-foreground/80 min-w-0">
+            <Link to="/" className="hover:text-accent transition-colors whitespace-nowrap" activeOptions={{ exact: true }} activeProps={{ className: "text-accent" }}>
+              Guias
+            </Link>
             {primaryNav.map((c) => (
               <Link
                 key={c.slug}
@@ -31,14 +34,13 @@ export function SiteHeader() {
           </nav>
         </div>
         <div className="flex items-center gap-3">
-          <div className="hidden md:flex items-center gap-2 bg-white/5 border border-hairline px-3 py-1.5 rounded-sm w-56 focus-within:border-accent/40 transition-colors">
+          <div className="hidden md:flex items-center gap-2 bg-surface border border-hairline px-3 py-1.5 rounded-lg w-64 focus-within:border-accent/60 transition-colors">
             <Search className="size-4 text-muted-foreground" aria-hidden />
             <input
-              placeholder="Buscar review, produto..."
+              placeholder="Buscar TV, celular, fone..."
               className="bg-transparent outline-none text-sm w-full placeholder:text-muted-foreground/60"
               aria-label="Buscar no TechRadar"
             />
-            <kbd className="hidden lg:inline text-[10px] font-mono text-muted-foreground/60 border border-hairline px-1 rounded">/</kbd>
           </div>
           <button className="md:hidden p-2 text-muted-foreground hover:text-accent" aria-label="Buscar">
             <Search className="size-5" />

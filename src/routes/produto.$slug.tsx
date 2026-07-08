@@ -142,12 +142,12 @@ function ProductPage() {
             <a
               href={product.affiliateUrl}
               target="_blank"
-              rel="sponsored noopener noreferrer"
-              className="w-full inline-flex items-center justify-center gap-2 bg-accent text-background px-6 py-4 font-display font-extrabold uppercase text-sm tracking-tight hover:brightness-110 transition-all rounded-sm"
+              rel="sponsored nofollow noopener noreferrer"
+              className="btn-affiliate w-full text-base"
             >
               Ver oferta no Mercado Livre <ExternalLink className="size-4" />
             </a>
-            <p className="text-[10px] font-mono text-muted-foreground/60 uppercase tracking-widest text-center">
+            <p className="text-[11px] text-muted-foreground text-center">
               Link de afiliado · sem custo adicional para você
             </p>
           </div>

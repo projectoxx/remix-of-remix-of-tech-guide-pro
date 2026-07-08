@@ -65,6 +65,19 @@ export type Article = {
   author: string;
 };
 
+export type Guide = {
+  slug: string;
+  question: string;               // pergunta como as pessoas pesquisam no Google
+  h1: string;                     // headline editorial (pode ser igual à pergunta)
+  intro: string;                  // parágrafo introdutório
+  categorySlug: string;
+  categoryName: string;
+  updatedAt: string;              // ISO
+  productSlugs: string[];         // ranking dentro do guia
+  verdict: string;
+  faq: { q: string; a: string }[];
+};
+
 export const categories: Category[] = [
   { slug: "smart-tvs", name: "Smart TVs", description: "Reviews de TVs 4K, 8K, OLED, QLED e Mini LED.", count: 42 },
   { slug: "celulares", name: "Celulares", description: "Smartphones Android e iPhone testados em laboratório.", count: 78 },
@@ -408,6 +421,125 @@ export const articles: Article[] = [
   { slug: "iphone-16-vs-galaxy-s24", title: "iPhone 16 vs Galaxy S24: quem venceu 2024?", excerpt: "Análise técnica dos flagships mais vendidos do ano.", category: "Comparativo", readingMinutes: 15, publishedAt: "2024-10-05", author: "Bruno Sato" },
 ];
 
+export const guides: Guide[] = [
+  {
+    slug: "melhor-tv-para-comprar-2026",
+    question: "Qual a melhor TV para comprar em 2026?",
+    h1: "Qual a melhor TV para comprar em 2026?",
+    intro:
+      "Testamos as principais smart TVs vendidas no Mercado Livre e reunimos aqui as escolhas mais equilibradas entre imagem, preço e durabilidade. Se você quer acertar na compra sem gastar horas comparando ficha técnica, comece por esta lista — atualizada mensalmente.",
+    categorySlug: "smart-tvs",
+    categoryName: "Smart TVs",
+    updatedAt: "2026-06-14",
+    productSlugs: ["sony-a95l-65", "lg-c3-55", "samsung-s95c-65"],
+    verdict:
+      "Para a maioria das pessoas, a LG OLED C3 é o melhor equilíbrio entre preço, qualidade de imagem e recursos para jogos em 2026. Se o orçamento permitir, a Sony A95L entrega a melhor imagem do mercado.",
+    faq: [
+      { q: "Vale a pena comprar TV OLED em 2026?", a: "Sim, para quem assiste filmes e séries ou joga PS5/Xbox Series X. O preto perfeito e o tempo de resposta seguem imbatíveis. Para ambientes muito claros, uma Mini LED de topo pode ser preferível." },
+      { q: "Quantas polegadas comprar?", a: "Para salas comuns, 55\" resolve muito bem. A partir de 3 metros de distância, 65\" começa a valer a pena." },
+      { q: "Onde comprar com segurança?", a: "No Mercado Livre, prefira lojas oficiais das marcas (Sony, LG, Samsung) e verifique se a entrega é feita pelo Mercado Envios Full." },
+    ],
+  },
+  {
+    slug: "tvs-baratas-mais-procuradas",
+    question: "Quais TVs baratas são as mais procuradas hoje?",
+    h1: "As TVs baratas mais procuradas (e que realmente valem a pena)",
+    intro:
+      "Barato não pode significar arrependimento. Selecionamos as smart TVs mais buscadas por quem quer gastar pouco, filtrando pelas que têm boa nota em imagem, sistema fluido e reputação sólida no pós-venda.",
+    categorySlug: "smart-tvs",
+    categoryName: "Smart TVs",
+    updatedAt: "2026-06-10",
+    productSlugs: ["lg-c3-55"],
+    verdict:
+      "Se o teto é abaixo de R$ 3.000, priorize resolução 4K, HDR10 e um sistema conhecido (Google TV, webOS ou Roku TV). Fuja de marcas sem suporte no Brasil.",
+    faq: [
+      { q: "TV barata dura menos?", a: "Não necessariamente. O que muda é o controle de qualidade e o suporte pós-venda. Marcas conhecidas com garantia estendida diluem esse risco." },
+      { q: "Vale pagar mais por 4K?", a: "Sim. A diferença de preço entre Full HD e 4K encolheu muito, e conteúdo 4K já é padrão em streaming." },
+    ],
+  },
+  {
+    slug: "melhor-tv-55-polegadas-custo-beneficio",
+    question: "Qual a melhor TV 55 polegadas custo-benefício?",
+    h1: "Melhor TV 55\" custo-benefício",
+    intro:
+      "55 polegadas é o tamanho mais vendido no Brasil e onde a briga por custo-benefício é mais dura. Comparamos brilho, sistema, gaming e preço para escolher as que mais entregam por real gasto.",
+    categorySlug: "smart-tvs",
+    categoryName: "Smart TVs",
+    updatedAt: "2026-06-08",
+    productSlugs: ["lg-c3-55", "samsung-s95c-65"],
+    verdict:
+      "A LG OLED C3 55\" reina no custo-benefício premium. Para orçamentos menores, procure QLEDs de 55\" da Samsung ou TCL com 120Hz.",
+    faq: [
+      { q: "OLED de 55\" vale a pena?", a: "Vale, se você consumir filmes/séries e jogar. Para quem só assiste TV aberta, uma QLED entrega mais brilho por menos." },
+    ],
+  },
+  {
+    slug: "melhor-celular-ate-3000-reais",
+    question: "Qual o melhor celular até 3.000 reais?",
+    h1: "Melhor celular até R$ 3.000 em 2026",
+    intro:
+      "Nessa faixa está a maior briga de smartphones no Mercado Livre. Nossa recomendação prioriza processador atual, tela AMOLED e política de atualização — os três pontos que decidem se o aparelho envelhece bem.",
+    categorySlug: "celulares",
+    categoryName: "Celulares",
+    updatedAt: "2026-06-05",
+    productSlugs: ["poco-f6"],
+    verdict:
+      "O POCO F6 é hoje o melhor custo-benefício abaixo de R$ 3.000, com performance de topo, AMOLED 120Hz e carregamento rápido. Se quiser marca com mais lojas físicas, avalie Motorola Edge 50 ou Galaxy A55.",
+    faq: [
+      { q: "Melhor comprar direto do Mercado Livre ou loja física?", a: "No Mercado Livre você geralmente paga menos, mas confirme se é uma loja oficial ou MercadoLíder Platinum para garantir a nota fiscal e a garantia." },
+      { q: "Vale esperar Black Friday?", a: "Se não tem urgência, sim. A faixa de R$ 2.500–3.000 costuma ter os melhores descontos em novembro." },
+    ],
+  },
+  {
+    slug: "melhor-iphone-para-comprar",
+    question: "Qual o melhor iPhone para comprar hoje?",
+    h1: "Qual iPhone comprar hoje: guia direto ao ponto",
+    intro:
+      "Se você já decidiu que quer iPhone, resta escolher entre custo-benefício, câmera ou o topo absoluto. Aqui está o resumo por perfil, com foco nos modelos que realmente compensam no Mercado Livre.",
+    categorySlug: "celulares",
+    categoryName: "Celulares",
+    updatedAt: "2026-06-02",
+    productSlugs: ["iphone-15-pro-max"],
+    verdict:
+      "O iPhone 15 Pro Max segue como a compra mais completa da Apple no Brasil. Se quer economizar sem perder muito, um iPhone 15 (não Pro) atende a maioria por 30–40% menos.",
+    faq: [
+      { q: "Vale a pena comprar iPhone recondicionado?", a: "Vale, desde que seja de vendedor com reputação verde, garantia mínima de 90 dias e teste de bateria acima de 85%." },
+    ],
+  },
+  {
+    slug: "melhor-fone-bluetooth-com-cancelamento-de-ruido",
+    question: "Qual o melhor fone Bluetooth com cancelamento de ruído?",
+    h1: "Melhor fone Bluetooth com cancelamento de ruído",
+    intro:
+      "O cancelamento ativo virou padrão nos fones premium. Testamos autonomia, qualidade de chamada e conforto em uso prolongado — o objetivo é você escolher em 2 minutos.",
+    categorySlug: "fones-bluetooth",
+    categoryName: "Fones Bluetooth",
+    updatedAt: "2026-05-28",
+    productSlugs: ["sony-wh-1000xm5"],
+    verdict:
+      "Sony WH-1000XM5 é a escolha segura: melhor ANC do mercado, som equilibrado e 30h de bateria. Se prefere modelos in-ear, olhe para os Sony WF-1000XM5 ou Apple AirPods Pro 2.",
+    faq: [
+      { q: "Preciso pagar caro para ter cancelamento bom?", a: "O salto grande está entre R$ 300 e R$ 1.000. Acima disso, o ganho é mais em conforto, chamadas e codecs de alta resolução." },
+    ],
+  },
+  {
+    slug: "melhor-notebook-para-trabalho-remoto",
+    question: "Qual o melhor notebook para trabalho remoto?",
+    h1: "Melhor notebook para trabalho remoto em 2026",
+    intro:
+      "Trabalho remoto exige três coisas: bateria que aguente um dia inteiro, tela que não canse os olhos e webcam decente. Selecionamos os notebooks que entregam esse pacote sem exageros de preço.",
+    categorySlug: "notebooks",
+    categoryName: "Notebooks",
+    updatedAt: "2026-05-22",
+    productSlugs: ["macbook-pro-m3-max"],
+    verdict:
+      "Para quem trabalha com edição, código pesado ou design, o MacBook Pro M3 é imbatível em autonomia e silêncio. Para trabalho de escritório, um notebook com Ryzen 7 ou Core i5 recente entrega o essencial por muito menos.",
+    faq: [
+      { q: "Mac ou Windows para trabalho remoto?", a: "Se sua empresa usa Office 365, Teams e sistemas web, tanto faz. Mac ganha em bateria e revenda; Windows ganha em variedade e preço." },
+    ],
+  },
+];
+
 export function findProduct(slug: string): Product | undefined {
   return products.find((p) => p.slug === slug);
 }
@@ -426,6 +558,14 @@ export function findComparison(slug: string): Comparison | undefined {
 
 export function findRanking(slug: string): Ranking | undefined {
   return rankings.find((r) => r.slug === slug);
+}
+
+export function findGuide(slug: string): Guide | undefined {
+  return guides.find((g) => g.slug === slug);
+}
+
+export function guidesByCategory(slug: string): Guide[] {
+  return guides.filter((g) => g.categorySlug === slug);
 }
 
 export function formatBRL(n: number): string {

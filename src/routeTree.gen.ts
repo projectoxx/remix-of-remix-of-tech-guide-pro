@@ -13,6 +13,7 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as RankingsRouteImport } from './routes/rankings'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProdutoSlugRouteImport } from './routes/produto.$slug'
+import { Route as GuiaSlugRouteImport } from './routes/guia.$slug'
 import { Route as ComparativoSlugRouteImport } from './routes/comparativo.$slug'
 import { Route as CategoriaSlugRouteImport } from './routes/categoria.$slug'
 
@@ -36,6 +37,11 @@ const ProdutoSlugRoute = ProdutoSlugRouteImport.update({
   path: '/produto/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const GuiaSlugRoute = GuiaSlugRouteImport.update({
+  id: '/guia/$slug',
+  path: '/guia/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ComparativoSlugRoute = ComparativoSlugRouteImport.update({
   id: '/comparativo/$slug',
   path: '/comparativo/$slug',
@@ -53,6 +59,7 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/categoria/$slug': typeof CategoriaSlugRoute
   '/comparativo/$slug': typeof ComparativoSlugRoute
+  '/guia/$slug': typeof GuiaSlugRoute
   '/produto/$slug': typeof ProdutoSlugRoute
 }
 export interface FileRoutesByTo {
@@ -61,6 +68,7 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/categoria/$slug': typeof CategoriaSlugRoute
   '/comparativo/$slug': typeof ComparativoSlugRoute
+  '/guia/$slug': typeof GuiaSlugRoute
   '/produto/$slug': typeof ProdutoSlugRoute
 }
 export interface FileRoutesById {
@@ -70,6 +78,7 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/categoria/$slug': typeof CategoriaSlugRoute
   '/comparativo/$slug': typeof ComparativoSlugRoute
+  '/guia/$slug': typeof GuiaSlugRoute
   '/produto/$slug': typeof ProdutoSlugRoute
 }
 export interface FileRouteTypes {
@@ -80,6 +89,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/categoria/$slug'
     | '/comparativo/$slug'
+    | '/guia/$slug'
     | '/produto/$slug'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -88,6 +98,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/categoria/$slug'
     | '/comparativo/$slug'
+    | '/guia/$slug'
     | '/produto/$slug'
   id:
     | '__root__'
@@ -96,6 +107,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/categoria/$slug'
     | '/comparativo/$slug'
+    | '/guia/$slug'
     | '/produto/$slug'
   fileRoutesById: FileRoutesById
 }
@@ -105,6 +117,7 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   CategoriaSlugRoute: typeof CategoriaSlugRoute
   ComparativoSlugRoute: typeof ComparativoSlugRoute
+  GuiaSlugRoute: typeof GuiaSlugRoute
   ProdutoSlugRoute: typeof ProdutoSlugRoute
 }
 
@@ -138,6 +151,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProdutoSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/guia/$slug': {
+      id: '/guia/$slug'
+      path: '/guia/$slug'
+      fullPath: '/guia/$slug'
+      preLoaderRoute: typeof GuiaSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/comparativo/$slug': {
       id: '/comparativo/$slug'
       path: '/comparativo/$slug'
@@ -161,6 +181,7 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   CategoriaSlugRoute: CategoriaSlugRoute,
   ComparativoSlugRoute: ComparativoSlugRoute,
+  GuiaSlugRoute: GuiaSlugRoute,
   ProdutoSlugRoute: ProdutoSlugRoute,
 }
 export const routeTree = rootRouteImport
