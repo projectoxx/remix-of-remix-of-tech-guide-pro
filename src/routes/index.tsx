@@ -136,15 +136,19 @@ function HomePage() {
           {activeGuide && activeProduct && (
             <div className="card-lab rounded-2xl overflow-hidden grid md:grid-cols-2 gap-0">
               <div className="relative bg-surface-2 aspect-[4/3] md:aspect-auto">
-                {activeProduct.imageUrl && (
+                {activeProductImg ? (
                   <img
-                    src={activeProduct.imageUrl}
+                    src={activeProductImg}
                     alt={activeProduct.name}
                     loading="lazy"
                     width={1200}
                     height={900}
                     className="absolute inset-0 h-full w-full object-cover"
                   />
+                ) : (
+                  <div className="absolute inset-0 grid place-items-center text-foreground/25 font-display font-extrabold text-5xl px-6 text-center">
+                    {activeProduct.brand}
+                  </div>
                 )}
                 <div className="absolute top-4 left-4 inline-flex items-center gap-1 bg-white/95 shadow-sm border border-hairline px-2.5 py-1 rounded-full text-sm font-bold">
                   <Star className="size-3.5 fill-highlight text-highlight" />
