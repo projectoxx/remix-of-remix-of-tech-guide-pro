@@ -7,6 +7,8 @@ import { ScoreBreakdownGrid } from "@/components/site/score-breakdown";
 import { ProductTile } from "@/components/site/product-tile";
 import { findProduct, formatBRL, products, type Product } from "@/lib/mock-data";
 import { getAffiliateUrl } from "@/lib/affiliate";
+import { getProductImageUrl } from "@/lib/affiliate";
+import { useEffect, useState } from "react";
 
 export const Route = createFileRoute("/produto/$slug")({
   loader: ({ params }) => {
@@ -77,6 +79,8 @@ export const Route = createFileRoute("/produto/$slug")({
 
 function ProductPage() {
   const { product, related } = Route.useLoaderData() as { product: Product; related: Product[] };
+  const [img, setImg] = useState<string>(product.imageUrl || "");
+  useEffect(() => { setImg(getProductImageUrl(product.slug)); }, [product.slug]);
   return (
     <div className="min-h-screen bg-background">
       <SiteHeader />
@@ -98,9 +102,9 @@ function ProductPage() {
             className="lg:col-span-7 aspect-[4/3] rounded-sm border border-hairline overflow-hidden relative"
             style={{ backgroundImage: `radial-gradient(120% 90% at 30% 20%, ${product.gradient[1]}44, transparent 60%), linear-gradient(135deg, ${product.gradient[0]}, ${product.gradient[1]}22)` }}
           >
-            {product.imageUrl ? (
+            {img ? (
               <img
-                src={product.imageUrl}
+                src={img}
                 alt={product.name}
                 width={1200}
                 height={900}
@@ -158,9 +162,6 @@ function ProductPage() {
             >
               Ver oferta no Mercado Livre <ExternalLink className="size-4" />
             </a>
-            <p className="text-[11px] text-muted-foreground text-center">
-              Link de afiliado · sem custo adicional para você
-            </p>
           </div>
         </section>
 

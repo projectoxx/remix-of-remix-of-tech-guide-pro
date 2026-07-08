@@ -3,6 +3,8 @@ import type { Product } from "@/lib/mock-data";
 import { formatBRL } from "@/lib/mock-data";
 import { BadgeChip } from "./score-badge";
 import { Star } from "lucide-react";
+import { getProductImageUrl } from "@/lib/affiliate";
+import { useEffect, useState } from "react";
 
 const badgeMap: Record<NonNullable<Product["badge"]>, { label: string; variant: "accent" | "highlight" | "premium" }> = {
   premium: { label: "Premium", variant: "premium" },
@@ -13,6 +15,10 @@ const badgeMap: Record<NonNullable<Product["badge"]>, { label: string; variant: 
 
 export function ProductTile({ product }: { product: Product }) {
   const badge = product.badge ? badgeMap[product.badge] : undefined;
+  const [img, setImg] = useState<string>(product.imageUrl || "");
+  useEffect(() => {
+    setImg(getProductImageUrl(product.slug));
+  }, [product.slug]);
   return (
     <Link
       to="/produto/$slug"
@@ -20,9 +26,9 @@ export function ProductTile({ product }: { product: Product }) {
       className="card-lab group flex flex-col overflow-hidden rounded-xl"
     >
       <div className="aspect-[4/3] relative overflow-hidden bg-surface-2">
-        {product.imageUrl ? (
+        {img ? (
           <img
-            src={product.imageUrl}
+            src={img}
             alt={product.name}
             loading="lazy"
             width={800}
