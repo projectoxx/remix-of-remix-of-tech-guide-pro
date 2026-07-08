@@ -5,7 +5,7 @@ import { SiteFooter } from "@/components/site/site-footer";
 import { ScoreBadge, BadgeChip } from "@/components/site/score-badge";
 import { ScoreBreakdownGrid } from "@/components/site/score-breakdown";
 import { ProductTile } from "@/components/site/product-tile";
-import { findProduct, formatBRL, products } from "@/lib/mock-data";
+import { findProduct, formatBRL, products, type Product } from "@/lib/mock-data";
 
 export const Route = createFileRoute("/produto/$slug")({
   loader: ({ params }) => {
@@ -75,7 +75,7 @@ export const Route = createFileRoute("/produto/$slug")({
 });
 
 function ProductPage() {
-  const { product, related } = Route.useLoaderData();
+  const { product, related } = Route.useLoaderData() as { product: Product; related: Product[] };
   return (
     <div className="min-h-screen bg-background">
       <SiteHeader />
