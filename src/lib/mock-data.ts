@@ -16,9 +16,6 @@ export type ScoreBreakdown = {
   custoBeneficio: number;
 };
 
-import tvGeneric from "@/assets/tv-generic.jpg";
-import tvLifestyle from "@/assets/tv-lifestyle.jpg";
-
 export type Product = {
   slug: string;
   name: string;
