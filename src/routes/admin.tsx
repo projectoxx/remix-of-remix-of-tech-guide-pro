@@ -7,6 +7,8 @@ import {
   getAllAffiliateOverrides,
   setAffiliateUrl,
   clearAffiliateOverride,
+  getAllProductImageOverrides,
+  setProductImageUrl,
 } from "@/lib/affiliate";
 import { Check, Save, Trash2, ExternalLink } from "lucide-react";
 
@@ -23,21 +25,30 @@ export const Route = createFileRoute("/admin")({
 
 function AdminPage() {
   const [values, setValues] = useState<Record<string, string>>({});
+  const [images, setImages] = useState<Record<string, string>>({});
   const [savedSlug, setSavedSlug] = useState<string | null>(null);
 
   useEffect(() => {
     setValues(getAllAffiliateOverrides());
+    setImages(getAllProductImageOverrides());
   }, []);
 
   function save(slug: string) {
     setAffiliateUrl(slug, values[slug] ?? "");
+    setProductImageUrl(slug, images[slug] ?? "");
     setSavedSlug(slug);
     setTimeout(() => setSavedSlug(null), 1500);
   }
 
   function clear(slug: string) {
     clearAffiliateOverride(slug);
+    setProductImageUrl(slug, "");
     setValues((v) => {
+      const next = { ...v };
+      delete next[slug];
+      return next;
+    });
+    setImages((v) => {
       const next = { ...v };
       delete next[slug];
       return next;
@@ -54,9 +65,13 @@ function AdminPage() {
             Cole seus links de afiliado do Mercado Livre
           </h1>
           <p className="text-foreground/70 leading-relaxed">
-            Para cada produto abaixo, cole o link de afiliado gerado no seu painel do
-            Mercado Livre e clique em <strong>Salvar</strong>. Todos os botões
-            "Ver no Mercado Livre" do site vão passar a usar esse link imediatamente.
+            Para cada produto abaixo, cole (1) o link de afiliado gerado no seu painel do
+            Mercado Livre e (2) a URL da imagem do anúncio no Mercado Livre. Clique em
+            <strong> Salvar</strong> e o site passa a exibir a foto e o link certos imediatamente.
+          </p>
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            <strong>Como pegar a imagem:</strong> abra o anúncio no Mercado Livre, clique com o botão
+            direito na foto principal e escolha "Copiar endereço da imagem". Cole no campo <em>Imagem</em>.
           </p>
           <div className="text-sm text-muted-foreground bg-surface border border-hairline rounded-lg p-4 leading-relaxed">
             <strong className="text-foreground">Importante:</strong> os links salvos aqui
@@ -74,25 +89,32 @@ function AdminPage() {
                 <th className="text-left px-4 py-3 font-semibold">Produto</th>
                 <th className="text-left px-4 py-3 font-semibold">Categoria</th>
                 <th className="text-left px-4 py-3 font-semibold">Preço médio</th>
-                <th className="text-left px-4 py-3 font-semibold w-[45%]">Link de afiliado ML</th>
+                <th className="text-left px-4 py-3 font-semibold w-[30%]">Imagem do ML (URL)</th>
+                <th className="text-left px-4 py-3 font-semibold w-[30%]">Link de afiliado ML</th>
                 <th className="text-right px-4 py-3 font-semibold">Ações</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-hairline">
               {products.map((p) => {
                 const val = values[p.slug] ?? "";
+                const imgVal = images[p.slug] ?? "";
+                const previewImg = imgVal || p.imageUrl || "";
                 const saved = savedSlug === p.slug;
                 return (
                   <tr key={p.slug} className="hover:bg-surface/60">
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
-                        {p.imageUrl && (
+                        {previewImg ? (
                           <img
-                            src={p.imageUrl}
+                            src={previewImg}
                             alt=""
                             loading="lazy"
                             className="size-12 object-cover rounded border border-hairline"
                           />
+                        ) : (
+                          <div className="size-12 grid place-items-center rounded border border-hairline bg-surface text-[10px] text-muted-foreground font-semibold text-center leading-tight">
+                            sem<br/>foto
+                          </div>
                         )}
                         <div>
                           <div className="font-semibold text-foreground leading-tight">{p.name}</div>
@@ -105,12 +127,23 @@ function AdminPage() {
                     <td className="px-4 py-3">
                       <input
                         type="url"
+                        placeholder="https://http2.mlstatic.com/..."
+                        value={imgVal}
+                        onChange={(e) =>
+                          setImages((v) => ({ ...v, [p.slug]: e.target.value }))
+                        }
+                        className="w-full bg-white border border-hairline rounded px-3 py-2 text-xs font-mono outline-none focus:border-accent focus:ring-2 focus:ring-accent/20"
+                      />
+                    </td>
+                    <td className="px-4 py-3">
+                      <input
+                        type="url"
                         placeholder="https://mercadolivre.com/sec/..."
                         value={val}
                         onChange={(e) =>
                           setValues((v) => ({ ...v, [p.slug]: e.target.value }))
                         }
-                        className="w-full bg-white border border-hairline rounded px-3 py-2 text-sm font-mono outline-none focus:border-accent focus:ring-2 focus:ring-accent/20"
+                        className="w-full bg-white border border-hairline rounded px-3 py-2 text-xs font-mono outline-none focus:border-accent focus:ring-2 focus:ring-accent/20"
                       />
                     </td>
                     <td className="px-4 py-3">
