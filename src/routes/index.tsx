@@ -17,7 +17,9 @@ import {
   guides,
   products,
   findProduct,
+  productsByCategory,
 } from "@/lib/mock-data";
+import { getAffiliateUrl } from "@/lib/affiliate";
 
 export const Route = createFileRoute("/")({
   component: HomePage,
@@ -26,18 +28,17 @@ export const Route = createFileRoute("/")({
 function HomePage() {
   const featuredGuide = guides[0];
   const featuredProduct = findProduct(featuredGuide.productSlugs[0])!;
-  const otherGuides = guides.slice(1);
 
-  // Abas por categoria (só as que têm guias)
-  const guideCategories = useMemo(() => {
-    const set = new Set(guides.map((g) => g.categorySlug));
-    return categories.filter((c) => set.has(c.slug));
-  }, []);
-  const [activeCat, setActiveCat] = useState<string>("todos");
-  const visibleGuides =
-    activeCat === "todos" ? guides : guides.filter((g) => g.categorySlug === activeCat);
+  // Sub-abas: uma aba por TV específica (respondem "a TV X é boa?")
+  const tvGuides = useMemo(
+    () => guides.filter((g) => g.categorySlug === "smart-tvs" && g.productSlugs.length === 1),
+    []
+  );
+  const [activeTv, setActiveTv] = useState<string>(tvGuides[0]?.slug ?? "");
+  const activeGuide = tvGuides.find((g) => g.slug === activeTv) ?? tvGuides[0];
+  const activeProduct = activeGuide ? findProduct(activeGuide.productSlugs[0]) : undefined;
 
-  const topPicks = products.slice(0, 3);
+  const topPicks = productsByCategory("smart-tvs").slice(0, 3);
 
   return (
     <div className="min-h-screen bg-background">
