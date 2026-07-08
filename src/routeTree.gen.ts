@@ -9,38 +9,121 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as RankingsRouteImport } from './routes/rankings'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ProdutoSlugRouteImport } from './routes/produto.$slug'
+import { Route as ComparativoSlugRouteImport } from './routes/comparativo.$slug'
+import { Route as CategoriaSlugRouteImport } from './routes/categoria.$slug'
 
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RankingsRoute = RankingsRouteImport.update({
+  id: '/rankings',
+  path: '/rankings',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProdutoSlugRoute = ProdutoSlugRouteImport.update({
+  id: '/produto/$slug',
+  path: '/produto/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ComparativoSlugRoute = ComparativoSlugRouteImport.update({
+  id: '/comparativo/$slug',
+  path: '/comparativo/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CategoriaSlugRoute = CategoriaSlugRouteImport.update({
+  id: '/categoria/$slug',
+  path: '/categoria/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/rankings': typeof RankingsRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/categoria/$slug': typeof CategoriaSlugRoute
+  '/comparativo/$slug': typeof ComparativoSlugRoute
+  '/produto/$slug': typeof ProdutoSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/rankings': typeof RankingsRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/categoria/$slug': typeof CategoriaSlugRoute
+  '/comparativo/$slug': typeof ComparativoSlugRoute
+  '/produto/$slug': typeof ProdutoSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/rankings': typeof RankingsRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/categoria/$slug': typeof CategoriaSlugRoute
+  '/comparativo/$slug': typeof ComparativoSlugRoute
+  '/produto/$slug': typeof ProdutoSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/rankings'
+    | '/sitemap.xml'
+    | '/categoria/$slug'
+    | '/comparativo/$slug'
+    | '/produto/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/rankings'
+    | '/sitemap.xml'
+    | '/categoria/$slug'
+    | '/comparativo/$slug'
+    | '/produto/$slug'
+  id:
+    | '__root__'
+    | '/'
+    | '/rankings'
+    | '/sitemap.xml'
+    | '/categoria/$slug'
+    | '/comparativo/$slug'
+    | '/produto/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  RankingsRoute: typeof RankingsRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  CategoriaSlugRoute: typeof CategoriaSlugRoute
+  ComparativoSlugRoute: typeof ComparativoSlugRoute
+  ProdutoSlugRoute: typeof ProdutoSlugRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rankings': {
+      id: '/rankings'
+      path: '/rankings'
+      fullPath: '/rankings'
+      preLoaderRoute: typeof RankingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,22 +131,38 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/produto/$slug': {
+      id: '/produto/$slug'
+      path: '/produto/$slug'
+      fullPath: '/produto/$slug'
+      preLoaderRoute: typeof ProdutoSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/comparativo/$slug': {
+      id: '/comparativo/$slug'
+      path: '/comparativo/$slug'
+      fullPath: '/comparativo/$slug'
+      preLoaderRoute: typeof ComparativoSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/categoria/$slug': {
+      id: '/categoria/$slug'
+      path: '/categoria/$slug'
+      fullPath: '/categoria/$slug'
+      preLoaderRoute: typeof CategoriaSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  RankingsRoute: RankingsRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
+  CategoriaSlugRoute: CategoriaSlugRoute,
+  ComparativoSlugRoute: ComparativoSlugRoute,
+  ProdutoSlugRoute: ProdutoSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
