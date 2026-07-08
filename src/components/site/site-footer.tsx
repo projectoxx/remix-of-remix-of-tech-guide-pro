@@ -46,11 +46,6 @@ export function SiteFooter() {
                 suporte@techradarbrasil.store
               </a>
             </li>
-            <li>
-              <Link to="/admin" className="hover:text-accent transition-colors">
-                Painel de afiliados
-              </Link>
-            </li>
           </ul>
         </div>
       </div>

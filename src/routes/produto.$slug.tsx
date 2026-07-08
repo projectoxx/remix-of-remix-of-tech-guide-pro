@@ -6,22 +6,33 @@ import { ScoreBadge, BadgeChip } from "@/components/site/score-badge";
 import { ScoreBreakdownGrid } from "@/components/site/score-breakdown";
 import { ProductTile } from "@/components/site/product-tile";
 import { findProduct, formatBRL, products, type Product } from "@/lib/mock-data";
-import { getAffiliateUrl } from "@/lib/affiliate";
-import { getProductImageUrl } from "@/lib/affiliate";
+import {
+  getAffiliateUrl,
+  getProductImageUrl,
+  getProductOverrides,
+  getUserProducts,
+  findAnyProduct,
+} from "@/lib/affiliate";
 import { useEffect, useState } from "react";
 
 export const Route = createFileRoute("/produto/$slug")({
   loader: ({ params }) => {
     const product = findProduct(params.slug);
-    if (!product) throw notFound();
-    const related = products.filter((p) => p.slug !== product.slug && p.categorySlug === product.categorySlug).slice(0, 4);
-    return { product, related };
+    // Se não achou nas mocks, deixa o componente resolver via localStorage (SSR-safe).
+    if (!product) return { product: null as Product | null, related: [] as Product[], slug: params.slug };
+    const related = products
+      .filter((p) => p.slug !== product.slug && p.categorySlug === product.categorySlug)
+      .slice(0, 4);
+    return { product, related, slug: params.slug };
   },
   head: ({ params, loaderData }) => {
     if (!loaderData) {
       return { meta: [{ title: "Produto não encontrado" }, { name: "robots", content: "noindex" }] };
     }
     const { product } = loaderData;
+    if (!product) {
+      return { meta: [{ title: "Produto — TechRadar Brasil" }, { name: "robots", content: "noindex" }] };
+    }
     const title = `${product.name} — Review completo, nota ${product.score}/10 | TechRadar`;
     const description = product.summary;
     return {
@@ -78,9 +89,52 @@ export const Route = createFileRoute("/produto/$slug")({
 });
 
 function ProductPage() {
-  const { product, related } = Route.useLoaderData() as { product: Product; related: Product[] };
-  const [img, setImg] = useState<string>(product.imageUrl || "");
-  useEffect(() => { setImg(getProductImageUrl(product.slug)); }, [product.slug]);
+  const loaded = Route.useLoaderData() as { product: Product | null; related: Product[]; slug: string };
+  const [product, setProduct] = useState<Product | null>(loaded.product);
+  const [related, setRelated] = useState<Product[]>(loaded.related);
+  const [img, setImg] = useState<string>(loaded.product?.imageUrl || "");
+  const [ovr, setOvr] = useState<ReturnType<typeof getProductOverrides>>({});
+
+  useEffect(() => {
+    // Resolve produto (inclui os criados no admin via localStorage)
+    let p = loaded.product;
+    if (!p) {
+      p = findAnyProduct(loaded.slug) ?? null;
+      if (p) {
+        setProduct(p);
+        setRelated(
+          [...products, ...getUserProducts()]
+            .filter((x) => x.slug !== p!.slug && x.categorySlug === p!.categorySlug)
+            .slice(0, 4)
+        );
+      }
+    }
+    if (p) {
+      setImg(getProductImageUrl(p.slug));
+      setOvr(getProductOverrides(p.slug));
+    }
+  }, [loaded.slug]);
+
+  if (!product) {
+    return (
+      <div className="min-h-screen bg-background">
+        <SiteHeader />
+        <main className="container-page py-24 text-center">
+          <h1 className="font-display font-extrabold text-3xl mb-2">Produto não encontrado</h1>
+          <p className="text-muted-foreground mb-6">Este produto não existe ou foi removido.</p>
+          <Link to="/" className="text-accent hover:underline">Voltar ao início</Link>
+        </main>
+        <SiteFooter />
+      </div>
+    );
+  }
+
+  const displayPrice = typeof ovr.priceMin === "number" && ovr.priceMin > 0 ? ovr.priceMin : product.priceMin;
+  const priceOld = ovr.priceOld && ovr.priceOld > displayPrice ? ovr.priceOld : undefined;
+  const discountPct =
+    ovr.discountPct ??
+    (priceOld ? Math.round(((priceOld - displayPrice) / priceOld) * 100) : undefined);
+  const offerLabel = ovr.offerLabel;
   return (
     <div className="min-h-screen bg-background">
       <SiteHeader />
@@ -125,6 +179,16 @@ function ProductPage() {
                 </BadgeChip>
               </div>
             )}
+            {offerLabel && (
+              <div className="absolute top-4 right-4 inline-flex items-center gap-1 bg-destructive text-white text-xs font-bold uppercase tracking-wide px-3 py-1.5 rounded-full shadow-lg">
+                🔥 {offerLabel}
+              </div>
+            )}
+            {discountPct && discountPct > 0 && (
+              <div className="absolute bottom-4 right-4 bg-highlight text-foreground font-display font-extrabold text-xl px-3 py-1.5 rounded-full shadow-lg">
+                -{discountPct}%
+              </div>
+            )}
           </div>
           <div className="lg:col-span-5 space-y-5">
             <div className="eyebrow">{product.categoryName} · {product.brand}</div>
@@ -145,13 +209,22 @@ function ProductPage() {
             </div>
 
             <div className="space-y-2">
-              <div className="flex items-baseline gap-3">
-                <span className="font-display font-extrabold text-3xl">{formatBRL(product.priceAvg)}</span>
-                <span className="font-mono text-xs text-muted-foreground uppercase tracking-widest">preço médio</span>
+              <div className="flex items-baseline gap-3 flex-wrap">
+                {priceOld && (
+                  <span className="font-display text-xl text-muted-foreground line-through">
+                    {formatBRL(priceOld)}
+                  </span>
+                )}
+                <span className="font-display font-extrabold text-3xl">{formatBRL(displayPrice)}</span>
+                <span className="font-mono text-xs text-muted-foreground uppercase tracking-widest">
+                  {priceOld ? "com desconto" : "preço"}
+                </span>
               </div>
-              <div className="text-xs text-muted-foreground">
-                Variação: {formatBRL(product.priceMin)} – {formatBRL(product.priceMax)}
-              </div>
+              {!priceOld && (
+                <div className="text-xs text-muted-foreground">
+                  Variação: {formatBRL(product.priceMin)} – {formatBRL(product.priceMax)}
+                </div>
+              )}
             </div>
 
             <a
