@@ -20,9 +20,20 @@ export function ProductTile({ product }: { product: Product }) {
       className="card-lab group flex flex-col overflow-hidden rounded-xl"
     >
       <div className="aspect-[4/3] relative overflow-hidden bg-surface-2">
-        <div className="absolute inset-0 grid place-items-center text-foreground/25 font-display font-extrabold text-4xl px-6 text-center leading-tight">
-          {product.brand}
-        </div>
+        {product.imageUrl ? (
+          <img
+            src={product.imageUrl}
+            alt={product.name}
+            loading="lazy"
+            width={800}
+            height={600}
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+        ) : (
+          <div className="absolute inset-0 grid place-items-center text-foreground/25 font-display font-extrabold text-4xl px-6 text-center leading-tight">
+            {product.brand}
+          </div>
+        )}
         <div className="absolute top-3 left-3 flex gap-2">
           {badge && <BadgeChip variant={badge.variant}>{badge.label}</BadgeChip>}
         </div>

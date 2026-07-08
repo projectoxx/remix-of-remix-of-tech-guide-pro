@@ -41,8 +41,16 @@ export function SiteFooter() {
           <ul className="text-sm text-foreground/70 space-y-2">
             <li><a href="#" className="hover:text-accent transition-colors">Metodologia</a></li>
             <li><a href="#" className="hover:text-accent transition-colors">Quem somos</a></li>
-            <li><a href="#" className="hover:text-accent transition-colors">Contato</a></li>
-            <li><a href="#" className="hover:text-accent transition-colors">Anuncie</a></li>
+            <li>
+              <a href="mailto:suporte@techradarbrasil.store" className="hover:text-accent transition-colors">
+                suporte@techradarbrasil.store
+              </a>
+            </li>
+            <li>
+              <Link to="/admin" className="hover:text-accent transition-colors">
+                Painel de afiliados
+              </Link>
+            </li>
           </ul>
         </div>
       </div>

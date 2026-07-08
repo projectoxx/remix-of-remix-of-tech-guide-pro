@@ -17,7 +17,9 @@ import {
   guides,
   products,
   findProduct,
+  productsByCategory,
 } from "@/lib/mock-data";
+import { getAffiliateUrl } from "@/lib/affiliate";
 
 export const Route = createFileRoute("/")({
   component: HomePage,
@@ -26,18 +28,17 @@ export const Route = createFileRoute("/")({
 function HomePage() {
   const featuredGuide = guides[0];
   const featuredProduct = findProduct(featuredGuide.productSlugs[0])!;
-  const otherGuides = guides.slice(1);
 
-  // Abas por categoria (só as que têm guias)
-  const guideCategories = useMemo(() => {
-    const set = new Set(guides.map((g) => g.categorySlug));
-    return categories.filter((c) => set.has(c.slug));
-  }, []);
-  const [activeCat, setActiveCat] = useState<string>("todos");
-  const visibleGuides =
-    activeCat === "todos" ? guides : guides.filter((g) => g.categorySlug === activeCat);
+  // Sub-abas: uma aba por TV específica (respondem "a TV X é boa?")
+  const tvGuides = useMemo(
+    () => guides.filter((g) => g.categorySlug === "smart-tvs" && g.productSlugs.length === 1),
+    []
+  );
+  const [activeTv, setActiveTv] = useState<string>(tvGuides[0]?.slug ?? "");
+  const activeGuide = tvGuides.find((g) => g.slug === activeTv) ?? tvGuides[0];
+  const activeProduct = activeGuide ? findProduct(activeGuide.productSlugs[0]) : undefined;
 
-  const topPicks = products.slice(0, 3);
+  const topPicks = productsByCategory("smart-tvs").slice(0, 3);
 
   return (
     <div className="min-h-screen bg-background">
@@ -114,63 +115,76 @@ function HomePage() {
         {/* PERGUNTAS + ABAS */}
         <section className="container-page py-14 md:py-20">
           <SectionHeader
-            eyebrow="As dúvidas mais buscadas"
-            title="Perguntas que resolvemos por você"
-            subtitle="Cada guia responde exatamente uma dúvida real — direto ao ponto, com produto recomendado e link para comprar."
+            eyebrow="TV por TV"
+            title="A TV que você está pesquisando é boa?"
+            subtitle="Clique em uma TV abaixo para ver nossa análise honesta, preço médio no Mercado Livre e link direto para comprar."
           />
 
-          {/* Tabs */}
+          {/* Tabs — uma aba por TV */}
           <div className="flex flex-wrap gap-2 mb-8">
-            <TabButton active={activeCat === "todos"} onClick={() => setActiveCat("todos")}>
-              Todos
-            </TabButton>
-            {guideCategories.map((c) => (
-              <TabButton key={c.slug} active={activeCat === c.slug} onClick={() => setActiveCat(c.slug)}>
-                {c.name}
-              </TabButton>
-            ))}
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {visibleGuides.map((g) => {
+            {tvGuides.map((g) => {
               const p = findProduct(g.productSlugs[0]);
+              const label = p ? `${p.brand} ${p.name.replace(p.brand, "").trim()}` : g.question;
               return (
-                <Link
-                  key={g.slug}
-                  to="/guia/$slug"
-                  params={{ slug: g.slug }}
-                  className="card-lab rounded-xl p-6 flex flex-col gap-4 group"
-                >
-                  <div className="flex items-center gap-2 text-xs">
-                    <span className="text-accent font-semibold">{g.categoryName}</span>
-                    <span className="text-muted-foreground">·</span>
-                    <span className="text-muted-foreground">
-                      {new Date(g.updatedAt).toLocaleDateString("pt-BR", { month: "short", year: "numeric" })}
-                    </span>
-                  </div>
-                  <h3 className="font-display font-bold text-lg leading-snug text-foreground group-hover:text-accent transition-colors">
-                    {g.question}
-                  </h3>
-                  <p className="text-sm text-foreground/70 line-clamp-2 flex-1">{g.intro}</p>
-                  {p && (
-                    <div className="flex items-center justify-between pt-3 border-t border-hairline">
-                      <div className="text-xs">
-                        <div className="text-muted-foreground">Top pick</div>
-                        <div className="font-semibold text-foreground">{p.brand}</div>
-                      </div>
-                      <div className="text-xs text-right">
-                        <div className="text-muted-foreground">a partir de</div>
-                        <div className="font-display font-extrabold text-base text-foreground">{formatBRL(p.priceMin)}</div>
-                      </div>
-                    </div>
-                  )}
-                  <span className="inline-flex items-center gap-1 text-sm text-accent font-semibold">
-                    Ler análise <ArrowRight className="size-4" />
-                  </span>
-                </Link>
+                <TabButton key={g.slug} active={activeTv === g.slug} onClick={() => setActiveTv(g.slug)}>
+                  {label}
+              </TabButton>
               );
             })}
           </div>
+
+          {activeGuide && activeProduct && (
+            <div className="card-lab rounded-2xl overflow-hidden grid md:grid-cols-2 gap-0">
+              <div className="relative bg-surface-2 aspect-[4/3] md:aspect-auto">
+                {activeProduct.imageUrl && (
+                  <img
+                    src={activeProduct.imageUrl}
+                    alt={activeProduct.name}
+                    loading="lazy"
+                    width={1200}
+                    height={900}
+                    className="absolute inset-0 h-full w-full object-cover"
+                  />
+                )}
+                <div className="absolute top-4 left-4 inline-flex items-center gap-1 bg-white/95 shadow-sm border border-hairline px-2.5 py-1 rounded-full text-sm font-bold">
+                  <Star className="size-3.5 fill-highlight text-highlight" />
+                  <span className="tabular-nums">{activeProduct.score.toFixed(1)}</span>
+                </div>
+              </div>
+              <div className="p-6 md:p-10 flex flex-col gap-4">
+                <div className="text-xs font-semibold text-accent uppercase tracking-wide">
+                  {activeProduct.brand} · {activeProduct.categoryName}
+                </div>
+                <h3 className="trust-serif text-2xl md:text-3xl leading-tight text-foreground">
+                  {activeGuide.question}
+                </h3>
+                <p className="text-foreground/75 leading-relaxed">{activeGuide.verdict}</p>
+                <div className="flex items-baseline gap-2 pt-2">
+                  <span className="font-display font-extrabold text-2xl text-foreground">
+                    {formatBRL(activeProduct.priceMin)}
+                  </span>
+                  <span className="text-xs text-muted-foreground">preço médio no Mercado Livre</span>
+                </div>
+                <div className="flex flex-wrap gap-3 pt-2">
+                  <a
+                    href={getAffiliateUrl(activeProduct.slug)}
+                    target="_blank"
+                    rel="sponsored nofollow noopener noreferrer"
+                    className="btn-affiliate"
+                  >
+                    Ver no Mercado Livre <ExternalLink className="size-4" />
+                  </a>
+                  <Link
+                    to="/guia/$slug"
+                    params={{ slug: activeGuide.slug }}
+                    className="inline-flex items-center gap-2 px-5 py-3 font-semibold text-foreground border border-hairline rounded-lg hover:border-accent hover:text-accent transition-colors"
+                  >
+                    Ler análise completa <ArrowRight className="size-4" />
+                  </Link>
+                </div>
+              </div>
+            </div>
+          )}
         </section>
 
         {/* PRODUTOS EM DESTAQUE (com CTA Mercado Livre) */}
@@ -204,7 +218,7 @@ function HomePage() {
                       </div>
                     </div>
                     <a
-                      href={p.affiliateUrl}
+                      href={getAffiliateUrl(p.slug)}
                       target="_blank"
                       rel="sponsored nofollow noopener noreferrer"
                       className="btn-affiliate w-full text-sm"

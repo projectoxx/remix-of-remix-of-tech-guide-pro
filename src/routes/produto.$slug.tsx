@@ -6,6 +6,7 @@ import { ScoreBadge, BadgeChip } from "@/components/site/score-badge";
 import { ScoreBreakdownGrid } from "@/components/site/score-breakdown";
 import { ProductTile } from "@/components/site/product-tile";
 import { findProduct, formatBRL, products, type Product } from "@/lib/mock-data";
+import { getAffiliateUrl } from "@/lib/affiliate";
 
 export const Route = createFileRoute("/produto/$slug")({
   loader: ({ params }) => {
@@ -97,9 +98,19 @@ function ProductPage() {
             className="lg:col-span-7 aspect-[4/3] rounded-sm border border-hairline overflow-hidden relative"
             style={{ backgroundImage: `radial-gradient(120% 90% at 30% 20%, ${product.gradient[1]}44, transparent 60%), linear-gradient(135deg, ${product.gradient[0]}, ${product.gradient[1]}22)` }}
           >
-            <div className="absolute inset-0 grid place-items-center text-foreground/20 font-display font-extrabold text-6xl md:text-7xl text-center px-8 leading-none">
-              {product.brand}
-            </div>
+            {product.imageUrl ? (
+              <img
+                src={product.imageUrl}
+                alt={product.name}
+                width={1200}
+                height={900}
+                className="absolute inset-0 h-full w-full object-cover"
+              />
+            ) : (
+              <div className="absolute inset-0 grid place-items-center text-foreground/20 font-display font-extrabold text-6xl md:text-7xl text-center px-8 leading-none">
+                {product.brand}
+              </div>
+            )}
             {product.badge && (
               <div className="absolute top-4 left-4">
                 <BadgeChip variant="accent">
@@ -140,7 +151,7 @@ function ProductPage() {
             </div>
 
             <a
-              href={product.affiliateUrl}
+              href={getAffiliateUrl(product.slug)}
               target="_blank"
               rel="sponsored nofollow noopener noreferrer"
               className="btn-affiliate w-full text-base"
