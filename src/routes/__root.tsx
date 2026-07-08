@@ -80,10 +80,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { title: "TechRadar Brasil — Reviews, Comparativos e Rankings de Eletrônicos" },
       { name: "description", content: "A autoridade brasileira em reviews de tecnologia. Testes laboratoriais rigorosos de TVs, smartphones, notebooks, fones e mais — reviews baseados em dados, não em hype." },
       { name: "author", content: "TechRadar Brasil" },
-      { name: "theme-color", content: "#0d1b2a" },
+      { name: "theme-color", content: "#0f4c81" },
       { property: "og:site_name", content: "TechRadar Brasil" },
       { property: "og:title", content: "TechRadar Brasil — Reviews de Eletrônicos" },
-      { property: "og:description", content: "Reviews, comparativos e rankings profissionais de eletrônicos com metodologia laboratorial." },
+      { property: "og:description", content: "Reviews, guias de compra e comparativos de eletrônicos. Escolha com confiança antes de comprar no Mercado Livre." },
       { property: "og:type", content: "website" },
       { property: "og:locale", content: "pt_BR" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -97,7 +97,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" },
+      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Lora:wght@500;600;700&display=swap" },
     ],
     scripts: [
       {
