@@ -31,9 +31,8 @@ export function SiteFooter() {
           <h5 className="font-display text-sm font-bold text-foreground">Recursos</h5>
           <ul className="text-sm text-foreground/70 space-y-2">
             <li><Link to="/" className="hover:text-accent transition-colors">Guias de compra</Link></li>
-            <li><Link to="/rankings" className="hover:text-accent transition-colors">Rankings</Link></li>
-            <li><Link to="/" className="hover:text-accent transition-colors">Comparativos</Link></li>
-            <li><Link to="/" className="hover:text-accent transition-colors">Ofertas do dia</Link></li>
+            <li><Link to="/categoria/$slug" params={{ slug: "smart-tvs" }} className="hover:text-accent transition-colors">Smart TVs</Link></li>
+            <li><Link to="/categoria/$slug" params={{ slug: "celulares" }} className="hover:text-accent transition-colors">Celulares</Link></li>
           </ul>
         </div>
         <div className="space-y-3">

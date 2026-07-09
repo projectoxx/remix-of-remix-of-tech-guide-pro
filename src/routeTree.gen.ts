@@ -10,22 +10,15 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
-import { Route as RankingsRouteImport } from './routes/rankings'
 import { Route as PainelControle9k2mRouteImport } from './routes/painel-controle-9k2m'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProdutoSlugRouteImport } from './routes/produto.$slug'
 import { Route as GuiaSlugRouteImport } from './routes/guia.$slug'
-import { Route as ComparativoSlugRouteImport } from './routes/comparativo.$slug'
 import { Route as CategoriaSlugRouteImport } from './routes/categoria.$slug'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const RankingsRoute = RankingsRouteImport.update({
-  id: '/rankings',
-  path: '/rankings',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PainelControle9k2mRoute = PainelControle9k2mRouteImport.update({
@@ -48,11 +41,6 @@ const GuiaSlugRoute = GuiaSlugRouteImport.update({
   path: '/guia/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ComparativoSlugRoute = ComparativoSlugRouteImport.update({
-  id: '/comparativo/$slug',
-  path: '/comparativo/$slug',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const CategoriaSlugRoute = CategoriaSlugRouteImport.update({
   id: '/categoria/$slug',
   path: '/categoria/$slug',
@@ -62,20 +50,16 @@ const CategoriaSlugRoute = CategoriaSlugRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/painel-controle-9k2m': typeof PainelControle9k2mRoute
-  '/rankings': typeof RankingsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/categoria/$slug': typeof CategoriaSlugRoute
-  '/comparativo/$slug': typeof ComparativoSlugRoute
   '/guia/$slug': typeof GuiaSlugRoute
   '/produto/$slug': typeof ProdutoSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/painel-controle-9k2m': typeof PainelControle9k2mRoute
-  '/rankings': typeof RankingsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/categoria/$slug': typeof CategoriaSlugRoute
-  '/comparativo/$slug': typeof ComparativoSlugRoute
   '/guia/$slug': typeof GuiaSlugRoute
   '/produto/$slug': typeof ProdutoSlugRoute
 }
@@ -83,10 +67,8 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/painel-controle-9k2m': typeof PainelControle9k2mRoute
-  '/rankings': typeof RankingsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/categoria/$slug': typeof CategoriaSlugRoute
-  '/comparativo/$slug': typeof ComparativoSlugRoute
   '/guia/$slug': typeof GuiaSlugRoute
   '/produto/$slug': typeof ProdutoSlugRoute
 }
@@ -95,30 +77,24 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/painel-controle-9k2m'
-    | '/rankings'
     | '/sitemap.xml'
     | '/categoria/$slug'
-    | '/comparativo/$slug'
     | '/guia/$slug'
     | '/produto/$slug'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/painel-controle-9k2m'
-    | '/rankings'
     | '/sitemap.xml'
     | '/categoria/$slug'
-    | '/comparativo/$slug'
     | '/guia/$slug'
     | '/produto/$slug'
   id:
     | '__root__'
     | '/'
     | '/painel-controle-9k2m'
-    | '/rankings'
     | '/sitemap.xml'
     | '/categoria/$slug'
-    | '/comparativo/$slug'
     | '/guia/$slug'
     | '/produto/$slug'
   fileRoutesById: FileRoutesById
@@ -126,10 +102,8 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   PainelControle9k2mRoute: typeof PainelControle9k2mRoute
-  RankingsRoute: typeof RankingsRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   CategoriaSlugRoute: typeof CategoriaSlugRoute
-  ComparativoSlugRoute: typeof ComparativoSlugRoute
   GuiaSlugRoute: typeof GuiaSlugRoute
   ProdutoSlugRoute: typeof ProdutoSlugRoute
 }
@@ -141,13 +115,6 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/rankings': {
-      id: '/rankings'
-      path: '/rankings'
-      fullPath: '/rankings'
-      preLoaderRoute: typeof RankingsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/painel-controle-9k2m': {
@@ -178,13 +145,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GuiaSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/comparativo/$slug': {
-      id: '/comparativo/$slug'
-      path: '/comparativo/$slug'
-      fullPath: '/comparativo/$slug'
-      preLoaderRoute: typeof ComparativoSlugRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/categoria/$slug': {
       id: '/categoria/$slug'
       path: '/categoria/$slug'
@@ -198,23 +158,11 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   PainelControle9k2mRoute: PainelControle9k2mRoute,
-  RankingsRoute: RankingsRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   CategoriaSlugRoute: CategoriaSlugRoute,
-  ComparativoSlugRoute: ComparativoSlugRoute,
   GuiaSlugRoute: GuiaSlugRoute,
   ProdutoSlugRoute: ProdutoSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

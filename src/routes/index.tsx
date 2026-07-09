@@ -75,10 +75,11 @@ function HomePage() {
                   Ver o guia da vez <ArrowRight className="size-4" />
                 </Link>
                 <Link
-                  to="/rankings"
+                  to="/categoria/$slug"
+                  params={{ slug: "smart-tvs" }}
                   className="inline-flex items-center gap-2 px-5 py-3 font-semibold text-foreground border border-hairline rounded-lg hover:border-accent hover:text-accent transition-colors"
                 >
-                  Rankings 2026
+                  Ver todas as TVs
                 </Link>
               </div>
               <div className="flex flex-wrap gap-x-6 gap-y-2 pt-6 text-sm text-muted-foreground">

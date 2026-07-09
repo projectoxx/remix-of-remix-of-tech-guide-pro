@@ -1,10 +1,11 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { ArrowRight, Check, X, ExternalLink } from "lucide-react";
+import { ArrowRight, Check, X, ExternalLink, Sparkles, ShieldCheck, Truck, Award } from "lucide-react";
 import { SiteHeader } from "@/components/site/site-header";
 import { SiteFooter } from "@/components/site/site-footer";
 import { ScoreBadge, BadgeChip } from "@/components/site/score-badge";
 import { ScoreBreakdownGrid } from "@/components/site/score-breakdown";
 import { ProductTile } from "@/components/site/product-tile";
+import { ProductReviews } from "@/components/site/product-reviews";
 import { findProduct, formatBRL, products, type Product } from "@/lib/mock-data";
 import {
   getAffiliateUrl,
@@ -154,7 +155,11 @@ function ProductPage() {
         <section className="grid lg:grid-cols-12 gap-8 items-start">
           <div
             className="lg:col-span-7 aspect-[4/3] rounded-sm border border-hairline overflow-hidden relative"
-            style={{ backgroundImage: `radial-gradient(120% 90% at 30% 20%, ${product.gradient[1]}44, transparent 60%), linear-gradient(135deg, ${product.gradient[0]}, ${product.gradient[1]}22)` }}
+            style={
+              product.categorySlug === "celulares" || product.categorySlug === "smartwatch"
+                ? { background: "#ffffff" }
+                : { backgroundImage: `radial-gradient(120% 90% at 30% 20%, ${product.gradient[1]}44, transparent 60%), linear-gradient(135deg, ${product.gradient[0]}, ${product.gradient[1]}22)` }
+            }
           >
             {img ? (
               <img
@@ -162,7 +167,12 @@ function ProductPage() {
                 alt={product.name}
                 width={1200}
                 height={900}
-                className="absolute inset-0 h-full w-full object-cover"
+                className={
+                  "absolute inset-0 h-full w-full " +
+                  (product.categorySlug === "celulares" || product.categorySlug === "smartwatch"
+                    ? "object-contain p-8"
+                    : "object-cover")
+                }
               />
             ) : (
               <div className="absolute inset-0 grid place-items-center text-foreground/20 font-display font-extrabold text-6xl md:text-7xl text-center px-8 leading-none">
@@ -235,6 +245,54 @@ function ProductPage() {
             >
               Ver oferta no Mercado Livre <ExternalLink className="size-4" />
             </a>
+          </div>
+        </section>
+
+        {/* Sobre o produto — editorial rico */}
+        <section className="grid lg:grid-cols-3 gap-8 items-start">
+          <div className="lg:col-span-2 space-y-5">
+            <div className="eyebrow flex items-center gap-2"><Sparkles className="size-3.5" /> Sobre o produto</div>
+            <h2 className="font-display font-extrabold text-2xl md:text-3xl tracking-tight text-balance">
+              Por que {product.name} entrou na nossa seleção
+            </h2>
+            <p className="text-foreground/80 text-lg leading-relaxed text-pretty">{product.summary}</p>
+            <p className="text-muted-foreground leading-relaxed">
+              Nossa avaliação considera imagem, sistema, som, construção, recursos, conectividade e — o
+              mais importante — custo-benefício real na hora de comprar no Mercado Livre. Cada critério recebe
+              nota independente, para você comparar sem depender só da nota final.
+            </p>
+          </div>
+          <aside className="space-y-3">
+            <div className="card-lab p-4 rounded-xl flex items-center gap-3">
+              <ShieldCheck className="size-5 text-accent shrink-0" />
+              <div className="text-sm"><strong>Garantia do fabricante</strong><div className="text-xs text-muted-foreground">Comprando por vendedor oficial no ML</div></div>
+            </div>
+            <div className="card-lab p-4 rounded-xl flex items-center gap-3">
+              <Truck className="size-5 text-accent shrink-0" />
+              <div className="text-sm"><strong>Envio Mercado Envios Full</strong><div className="text-xs text-muted-foreground">Frete grátis a partir de R$ 79</div></div>
+            </div>
+            <div className="card-lab p-4 rounded-xl flex items-center gap-3">
+              <Award className="size-5 text-accent shrink-0" />
+              <div className="text-sm"><strong>Análise independente</strong><div className="text-xs text-muted-foreground">Sem pagamento de marcas</div></div>
+            </div>
+          </aside>
+        </section>
+
+        {/* Destaques */}
+        <section>
+          <div className="eyebrow mb-2">Destaques</div>
+          <h2 className="font-display font-extrabold text-2xl md:text-3xl tracking-tight mb-8">
+            O que faz esse produto valer a pena
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {product.pros.slice(0, 4).map((p, i) => (
+              <div key={p} className="card-lab p-5 rounded-xl space-y-3">
+                <div className="size-9 grid place-items-center rounded-full bg-accent/10 text-accent font-display font-extrabold">
+                  {i + 1}
+                </div>
+                <div className="font-display font-bold text-sm leading-snug">{p}</div>
+              </div>
+            ))}
           </div>
         </section>
 
@@ -324,6 +382,9 @@ function ProductPage() {
             ))}
           </div>
         </section>
+
+        {/* Avaliações dos leitores */}
+        <ProductReviews slug={product.slug} productName={product.name} />
 
         {/* Related */}
         {related.length > 0 && (
