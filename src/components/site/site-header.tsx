@@ -28,9 +28,6 @@ export function SiteHeader() {
                 {c.name}
               </Link>
             ))}
-            <Link to="/rankings" className="hover:text-accent transition-colors" activeProps={{ className: "text-accent" }}>
-              Rankings
-            </Link>
           </nav>
         </div>
         <div className="flex items-center gap-3">
