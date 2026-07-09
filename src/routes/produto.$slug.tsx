@@ -154,7 +154,11 @@ function ProductPage() {
         <section className="grid lg:grid-cols-12 gap-8 items-start">
           <div
             className="lg:col-span-7 aspect-[4/3] rounded-sm border border-hairline overflow-hidden relative"
-            style={{ backgroundImage: `radial-gradient(120% 90% at 30% 20%, ${product.gradient[1]}44, transparent 60%), linear-gradient(135deg, ${product.gradient[0]}, ${product.gradient[1]}22)` }}
+            style={
+              product.categorySlug === "celulares" || product.categorySlug === "smartwatch"
+                ? { background: "#ffffff" }
+                : { backgroundImage: `radial-gradient(120% 90% at 30% 20%, ${product.gradient[1]}44, transparent 60%), linear-gradient(135deg, ${product.gradient[0]}, ${product.gradient[1]}22)` }
+            }
           >
             {img ? (
               <img
@@ -162,7 +166,12 @@ function ProductPage() {
                 alt={product.name}
                 width={1200}
                 height={900}
-                className="absolute inset-0 h-full w-full object-cover"
+                className={
+                  "absolute inset-0 h-full w-full " +
+                  (product.categorySlug === "celulares" || product.categorySlug === "smartwatch"
+                    ? "object-contain p-8"
+                    : "object-cover")
+                }
               />
             ) : (
               <div className="absolute inset-0 grid place-items-center text-foreground/20 font-display font-extrabold text-6xl md:text-7xl text-center px-8 leading-none">
