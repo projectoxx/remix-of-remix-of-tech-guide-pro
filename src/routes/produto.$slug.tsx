@@ -383,6 +383,9 @@ function ProductPage() {
           </div>
         </section>
 
+        {/* Avaliações dos leitores */}
+        <ProductReviews slug={product.slug} productName={product.name} />
+
         {/* Related */}
         {related.length > 0 && (
           <section>
