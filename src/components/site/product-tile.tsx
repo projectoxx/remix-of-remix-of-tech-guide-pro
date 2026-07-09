@@ -27,13 +27,19 @@ export function ProductTile({ product }: { product: Product }) {
     ovr.discountPct ??
     (priceOld ? Math.round(((priceOld - displayPrice) / priceOld) * 100) : undefined);
   const offerLabel = ovr.offerLabel;
+  const isPortrait = product.categorySlug === "celulares" || product.categorySlug === "smartwatch";
   return (
     <Link
       to="/produto/$slug"
       params={{ slug: product.slug }}
       className="card-lab group flex flex-col overflow-hidden rounded-xl"
     >
-      <div className="aspect-[4/3] relative overflow-hidden bg-surface-2">
+      <div
+        className={
+          "relative overflow-hidden " +
+          (isPortrait ? "aspect-[4/3] bg-white p-6" : "aspect-[4/3] bg-surface-2")
+        }
+      >
         {img ? (
           <img
             src={img}
@@ -41,7 +47,10 @@ export function ProductTile({ product }: { product: Product }) {
             loading="lazy"
             width={800}
             height={600}
-            className="absolute inset-0 h-full w-full object-cover"
+            className={
+              "absolute inset-0 h-full w-full " +
+              (isPortrait ? "object-contain p-4" : "object-cover")
+            }
           />
         ) : (
           <div className="absolute inset-0 grid place-items-center text-foreground/25 font-display font-extrabold text-4xl px-6 text-center leading-tight">
