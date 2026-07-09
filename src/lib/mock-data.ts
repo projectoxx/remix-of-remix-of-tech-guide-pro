@@ -831,19 +831,19 @@ export const guides: Guide[] = [
   },
   {
     slug: "sony-a95l-e-boa",
-    question: "A Sony BRAVIA A95L é boa?",
-    h1: "Sony BRAVIA XR A95L 65\" é boa? Vale o preço?",
+    question: "A Hisense U8600F 50 é boa?",
+    h1: "Smart TV Hisense 50 U8600F Crystal UHD 4K é boa?",
     intro:
-      "A Sony A95L é a TV QD-OLED topo de linha da Sony. Testamos em laboratório para responder se vale o investimento de mais de R$ 20 mil.",
+      "A Hisense U8600F 50\" é uma das smart TVs 4K mais completas abaixo de R$ 2.500 em 2026 — com Dolby Vision, HDR10+ e sistema VIDAA. Testamos imagem, som e reputação de vendedores para responder se realmente vale a pena.",
     categorySlug: "smart-tvs",
     categoryName: "Smart TVs",
     updatedAt: "2026-06-09",
     productSlugs: ["sony-a95l-65"],
     verdict:
-      "Sim, se o preço não é limitante. É a melhor TV de imagem que testamos, com processamento Cognitive XR e painel QD-OLED de 2ª geração. Para uso misto (filmes, esportes, games), é a compra mais completa do mercado.",
+      "Sim, a Hisense U8600F 50 é boa e é uma das compras mais racionais em 4K abaixo de R$ 2.500. Dolby Vision + HDR10+ + compatibilidade com Alexa e Google Home é raro nessa faixa — supera a concorrência direta em recursos.",
     faq: [
-      { q: "A Sony A95L vale mais que a LG G4?", a: "Para cores puras e cinema, sim. A LG G4 tem brilho maior e é melhor para ambientes muito claros." },
-      { q: "Suporta 120Hz no PS5?", a: "Sim, as 2 portas HDMI 2.1 suportam 4K@120Hz, VRR e ALLM." },
+      { q: "A Hisense U8600F vale mais que uma TCL P7L QLED?", a: "Para consumo em Dolby Vision, empate técnico. A TCL ganha no painel QLED; a Hisense ganha em preço e no suporte a Alexa/Google Home nativo." },
+      { q: "Serve para PS5?", a: "Serve em 4K a 60Hz com HDR. Não tem 120Hz nativo — para gaming competitivo, procure a linha U8N ou similar." },
     ],
   },
   {
