@@ -674,19 +674,19 @@ export const articles: Article[] = [
 export const guides: Guide[] = [
   {
     slug: "tcl-50p755-e-boa",
-    question: "A TV TCL 50P755 é boa?",
-    h1: "A TCL 50P755 é boa? Análise completa em 2026",
+    question: "A Philco 32 Roku TV Dolby Áudio é boa?",
+    h1: "Smart TV Philco 32 PTV32G7ER2CPBL Roku Dolby Áudio é boa?",
     intro:
-      "A TCL 50P755 aparece no topo dos mais vendidos do Mercado Livre há meses. Testamos imagem, sistema Google TV, som e reputação de vendedores para responder se ela realmente vale a pena.",
+      "A Philco PTV32G7ER2CPBL é a smart TV 32\" com Roku TV e Dolby Áudio mais vendida do Mercado Livre em 2026. Testamos imagem, sistema Roku, som e reputação de vendedores para responder se ela realmente vale a pena.",
     categorySlug: "smart-tvs",
     categoryName: "Smart TVs",
     updatedAt: "2026-07-01",
     productSlugs: ["tcl-50p755"],
     verdict:
-      "Sim, a TCL 50P755 é boa e é uma das melhores compras de 4K abaixo de R$ 2.500. Ganha da concorrência direta em suporte a Dolby Vision e no sistema Google TV. Perde só em som — resolva com uma soundbar.",
+      "Sim, a Philco 32 Roku Dolby Áudio é boa e é uma das compras mais racionais em smart TVs 32\" abaixo de R$ 1.200. Roku TV nativo, Dolby Áudio de fábrica e marca com assistência conhecida — combinação difícil de bater no preço.",
     faq: [
-      { q: "Vale a pena TCL em 2026?", a: "Vale. A marca cresceu muito no Brasil, tem assistência e as TVs 4K entram no topo de mais vendidos consistentemente." },
-      { q: "Como comprar TCL com segurança no Mercado Livre?", a: "Filtre por vendedores oficiais TCL ou MercadoLíder Platinum, e prefira envio Full para receber com nota fiscal e garantia." },
+      { q: "Vale a pena comprar Philco 32 Roku em 2026?", a: "Vale, especialmente para quarto, cozinha ou como segunda TV. Roku TV é o sistema mais fácil e a Philco entrega assistência conhecida no Brasil." },
+      { q: "Como comprar Philco com segurança no Mercado Livre?", a: "Filtre por vendedores oficiais Philco ou MercadoLíder Platinum e prefira envio Full para receber com nota fiscal e garantia." },
     ],
   },
   {
