@@ -248,6 +248,54 @@ function ProductPage() {
           </div>
         </section>
 
+        {/* Sobre o produto — editorial rico */}
+        <section className="grid lg:grid-cols-3 gap-8 items-start">
+          <div className="lg:col-span-2 space-y-5">
+            <div className="eyebrow flex items-center gap-2"><Sparkles className="size-3.5" /> Sobre o produto</div>
+            <h2 className="font-display font-extrabold text-2xl md:text-3xl tracking-tight text-balance">
+              Por que {product.name} entrou na nossa seleção
+            </h2>
+            <p className="text-foreground/80 text-lg leading-relaxed text-pretty">{product.summary}</p>
+            <p className="text-muted-foreground leading-relaxed">
+              Nossa avaliação considera imagem, sistema, som, construção, recursos, conectividade e — o
+              mais importante — custo-benefício real na hora de comprar no Mercado Livre. Cada critério recebe
+              nota independente, para você comparar sem depender só da nota final.
+            </p>
+          </div>
+          <aside className="space-y-3">
+            <div className="card-lab p-4 rounded-xl flex items-center gap-3">
+              <ShieldCheck className="size-5 text-accent shrink-0" />
+              <div className="text-sm"><strong>Garantia do fabricante</strong><div className="text-xs text-muted-foreground">Comprando por vendedor oficial no ML</div></div>
+            </div>
+            <div className="card-lab p-4 rounded-xl flex items-center gap-3">
+              <Truck className="size-5 text-accent shrink-0" />
+              <div className="text-sm"><strong>Envio Mercado Envios Full</strong><div className="text-xs text-muted-foreground">Frete grátis a partir de R$ 79</div></div>
+            </div>
+            <div className="card-lab p-4 rounded-xl flex items-center gap-3">
+              <Award className="size-5 text-accent shrink-0" />
+              <div className="text-sm"><strong>Análise independente</strong><div className="text-xs text-muted-foreground">Sem pagamento de marcas</div></div>
+            </div>
+          </aside>
+        </section>
+
+        {/* Destaques */}
+        <section>
+          <div className="eyebrow mb-2">Destaques</div>
+          <h2 className="font-display font-extrabold text-2xl md:text-3xl tracking-tight mb-8">
+            O que faz esse produto valer a pena
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {product.pros.slice(0, 4).map((p, i) => (
+              <div key={p} className="card-lab p-5 rounded-xl space-y-3">
+                <div className="size-9 grid place-items-center rounded-full bg-accent/10 text-accent font-display font-extrabold">
+                  {i + 1}
+                </div>
+                <div className="font-display font-bold text-sm leading-snug">{p}</div>
+              </div>
+            ))}
+          </div>
+        </section>
+
         {/* Score breakdown + Specs */}
         <section className="grid lg:grid-cols-2 gap-8">
           <div className="card-lab p-6 md:p-8 rounded-sm">
