@@ -1,10 +1,11 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { ArrowRight, Check, X, ExternalLink } from "lucide-react";
+import { ArrowRight, Check, X, ExternalLink, Sparkles, ShieldCheck, Truck, Award } from "lucide-react";
 import { SiteHeader } from "@/components/site/site-header";
 import { SiteFooter } from "@/components/site/site-footer";
 import { ScoreBadge, BadgeChip } from "@/components/site/score-badge";
 import { ScoreBreakdownGrid } from "@/components/site/score-breakdown";
 import { ProductTile } from "@/components/site/product-tile";
+import { ProductReviews } from "@/components/site/product-reviews";
 import { findProduct, formatBRL, products, type Product } from "@/lib/mock-data";
 import {
   getAffiliateUrl,
