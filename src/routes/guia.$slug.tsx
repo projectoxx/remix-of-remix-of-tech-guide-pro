@@ -3,6 +3,7 @@ import { ArrowRight, ExternalLink, ShieldCheck, Check } from "lucide-react";
 import { SiteHeader } from "@/components/site/site-header";
 import { SiteFooter } from "@/components/site/site-footer";
 import { ScoreBadge } from "@/components/site/score-badge";
+import { AffiliateButton } from "@/components/site/product-tile";
 import {
   findGuide,
   findProduct,
@@ -165,14 +166,9 @@ function GuidePage() {
                           </div>
                           <div className="text-xs text-muted-foreground">no Mercado Livre</div>
                         </div>
-                        <a
-                          href={p.affiliateUrl}
-                          target="_blank"
-                          rel="sponsored nofollow noopener noreferrer"
-                          className="btn-affiliate w-full text-sm"
-                        >
+                        <AffiliateButton slug={p.slug} className="btn-affiliate w-full text-sm">
                           Ver oferta <ExternalLink className="size-4" />
-                        </a>
+                        </AffiliateButton>
                         <Link
                           to="/produto/$slug"
                           params={{ slug: p.slug }}
@@ -217,14 +213,9 @@ function GuidePage() {
                 <>
                   <div className="font-display font-bold text-lg leading-snug mb-1">{items[0].name}</div>
                   <div className="text-sm text-muted-foreground mb-4">{items[0].brand} · Nota {items[0].score}/10</div>
-                  <a
-                    href={items[0].affiliateUrl}
-                    target="_blank"
-                    rel="sponsored nofollow noopener noreferrer"
-                    className="btn-affiliate w-full text-sm"
-                  >
+                  <AffiliateButton slug={items[0].slug} className="btn-affiliate w-full text-sm">
                     Ver no Mercado Livre <ExternalLink className="size-4" />
-                  </a>
+                  </AffiliateButton>
                   <div className="text-xs text-muted-foreground text-center mt-2">
                     a partir de {formatBRL(items[0].priceMin)}
                   </div>

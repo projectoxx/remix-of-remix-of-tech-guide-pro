@@ -11,6 +11,8 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { getCatalogSnapshot } from "@/lib/catalog.functions";
+import { CatalogProvider } from "@/context/catalog-context";
 
 function NotFoundComponent() {
   return (
@@ -120,6 +122,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   component: RootComponent,
   notFoundComponent: NotFoundComponent,
   errorComponent: ErrorComponent,
+  loader: async () => {
+    try {
+      return { catalog: await getCatalogSnapshot() };
+    } catch (e) {
+      console.error("[root] catalog loader failed", e);
+      return { catalog: { overrides: {}, userProducts: [] } };
+    }
+  },
 });
 
 function RootShell({ children }: { children: ReactNode }) {
@@ -138,11 +148,14 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const { catalog } = Route.useLoaderData();
 
   return (
     <QueryClientProvider client={queryClient}>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      <CatalogProvider initial={catalog}>
+        {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+        <Outlet />
+      </CatalogProvider>
     </QueryClientProvider>
   );
 }

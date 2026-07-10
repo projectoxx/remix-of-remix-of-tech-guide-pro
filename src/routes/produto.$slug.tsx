@@ -4,17 +4,11 @@ import { SiteHeader } from "@/components/site/site-header";
 import { SiteFooter } from "@/components/site/site-footer";
 import { ScoreBadge, BadgeChip } from "@/components/site/score-badge";
 import { ScoreBreakdownGrid } from "@/components/site/score-breakdown";
-import { ProductTile } from "@/components/site/product-tile";
+import { ProductTile, AffiliateButton } from "@/components/site/product-tile";
 import { ProductReviews } from "@/components/site/product-reviews";
 import { findProduct, formatBRL, products, type Product } from "@/lib/mock-data";
-import {
-  getAffiliateUrl,
-  getProductImageUrl,
-  getProductOverrides,
-  getUserProducts,
-  findAnyProduct,
-} from "@/lib/affiliate";
-import { useEffect, useState } from "react";
+import { useCatalog } from "@/context/catalog-context";
+import { useMemo } from "react";
 
 export const Route = createFileRoute("/produto/$slug")({
   loader: ({ params }) => {
@@ -91,30 +85,20 @@ export const Route = createFileRoute("/produto/$slug")({
 
 function ProductPage() {
   const loaded = Route.useLoaderData() as { product: Product | null; related: Product[]; slug: string };
-  const [product, setProduct] = useState<Product | null>(loaded.product);
-  const [related, setRelated] = useState<Product[]>(loaded.related);
-  const [img, setImg] = useState<string>(loaded.product?.imageUrl || "");
-  const [ovr, setOvr] = useState<ReturnType<typeof getProductOverrides>>({});
+  const { getProduct, allProducts, displayFor } = useCatalog();
 
-  useEffect(() => {
-    // Resolve produto (inclui os criados no admin via localStorage)
-    let p = loaded.product;
-    if (!p) {
-      p = findAnyProduct(loaded.slug) ?? null;
-      if (p) {
-        setProduct(p);
-        setRelated(
-          [...products, ...getUserProducts()]
-            .filter((x) => x.slug !== p!.slug && x.categorySlug === p!.categorySlug)
-            .slice(0, 4)
-        );
-      }
-    }
-    if (p) {
-      setImg(getProductImageUrl(p.slug));
-      setOvr(getProductOverrides(p.slug));
-    }
-  }, [loaded.slug]);
+  const product = useMemo<Product | null>(() => {
+    if (loaded.product) return loaded.product;
+    return getProduct(loaded.slug) ?? null;
+  }, [loaded.product, loaded.slug, getProduct]);
+
+  const related = useMemo<Product[]>(() => {
+    if (!product) return [];
+    if (loaded.related.length > 0) return loaded.related;
+    return allProducts
+      .filter((x) => x.slug !== product.slug && x.categorySlug === product.categorySlug)
+      .slice(0, 4);
+  }, [product, loaded.related, allProducts]);
 
   if (!product) {
     return (
@@ -130,12 +114,12 @@ function ProductPage() {
     );
   }
 
-  const displayPrice = typeof ovr.priceMin === "number" && ovr.priceMin > 0 ? ovr.priceMin : product.priceMin;
-  const priceOld = ovr.priceOld && ovr.priceOld > displayPrice ? ovr.priceOld : undefined;
-  const discountPct =
-    ovr.discountPct ??
-    (priceOld ? Math.round(((priceOld - displayPrice) / priceOld) * 100) : undefined);
-  const offerLabel = ovr.offerLabel;
+  const d = displayFor(product);
+  const img = d.imageUrl;
+  const displayPrice = d.priceMin;
+  const priceOld = d.priceOld;
+  const discountPct = d.discountPct;
+  const offerLabel = d.offerLabel;
   return (
     <div className="min-h-screen bg-background">
       <SiteHeader />
@@ -237,14 +221,9 @@ function ProductPage() {
               )}
             </div>
 
-            <a
-              href={getAffiliateUrl(product.slug)}
-              target="_blank"
-              rel="sponsored nofollow noopener noreferrer"
-              className="btn-affiliate w-full text-base"
-            >
+            <AffiliateButton slug={product.slug} className="btn-affiliate w-full text-base">
               Ver oferta no Mercado Livre <ExternalLink className="size-4" />
-            </a>
+            </AffiliateButton>
           </div>
         </section>
 

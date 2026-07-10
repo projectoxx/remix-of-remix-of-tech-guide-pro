@@ -11,6 +11,7 @@ import {
 import { SiteHeader } from "@/components/site/site-header";
 import { SiteFooter } from "@/components/site/site-footer";
 import { SectionHeader } from "@/components/site/section-header";
+import { AffiliateButton } from "@/components/site/product-tile";
 import {
   categories,
   formatBRL,
@@ -19,9 +20,8 @@ import {
   findProduct,
   productsByCategory,
 } from "@/lib/mock-data";
-import { getAffiliateUrl } from "@/lib/affiliate";
-import { getProductImageUrl } from "@/lib/affiliate";
-import { useEffect } from "react";
+import { useCatalog } from "@/context/catalog-context";
+import { NewsletterForm } from "@/components/site/newsletter-form";
 
 export const Route = createFileRoute("/")({
   component: HomePage,
@@ -30,6 +30,7 @@ export const Route = createFileRoute("/")({
 function HomePage() {
   const featuredGuide = guides[0];
   const featuredProduct = findProduct(featuredGuide.productSlugs[0])!;
+  const { getImage, displayFor } = useCatalog();
 
   // Sub-abas: uma aba por TV específica (respondem "a TV X é boa?")
   const tvGuides = useMemo(
@@ -39,11 +40,8 @@ function HomePage() {
   const [activeTv, setActiveTv] = useState<string>(tvGuides[0]?.slug ?? "");
   const activeGuide = tvGuides.find((g) => g.slug === activeTv) ?? tvGuides[0];
   const activeProduct = activeGuide ? findProduct(activeGuide.productSlugs[0]) : undefined;
-  const [activeProductImg, setActiveProductImg] = useState<string>("");
-  useEffect(() => {
-    if (activeProduct) setActiveProductImg(getProductImageUrl(activeProduct.slug));
-    else setActiveProductImg("");
-  }, [activeProduct?.slug]);
+  const activeProductImg = activeProduct ? getImage(activeProduct.slug) : "";
+  const activeDisplay = activeProduct ? displayFor(activeProduct) : undefined;
 
   const topPicks = productsByCategory("smart-tvs").slice(0, 3);
 
@@ -172,20 +170,20 @@ function HomePage() {
                 </h3>
                 <p className="text-foreground/75 leading-relaxed">{activeGuide.verdict}</p>
                 <div className="flex items-baseline gap-2 pt-2">
+                  {activeDisplay?.priceOld && (
+                    <span className="text-sm text-muted-foreground line-through">
+                      {formatBRL(activeDisplay.priceOld)}
+                    </span>
+                  )}
                   <span className="font-display font-extrabold text-2xl text-foreground">
-                    {formatBRL(activeProduct.priceMin)}
+                    {formatBRL(activeDisplay?.priceMin ?? activeProduct.priceMin)}
                   </span>
-                  <span className="text-xs text-muted-foreground">preço médio no Mercado Livre</span>
+                  <span className="text-xs text-muted-foreground">preço no Mercado Livre</span>
                 </div>
                 <div className="flex flex-wrap gap-3 pt-2">
-                  <a
-                    href={getAffiliateUrl(activeProduct.slug)}
-                    target="_blank"
-                    rel="sponsored nofollow noopener noreferrer"
-                    className="btn-affiliate"
-                  >
+                  <AffiliateButton slug={activeProduct.slug}>
                     Ver no Mercado Livre <ExternalLink className="size-4" />
-                  </a>
+                  </AffiliateButton>
                   <Link
                     to="/guia/$slug"
                     params={{ slug: activeGuide.slug }}
@@ -229,14 +227,9 @@ function HomePage() {
                         {formatBRL(p.priceMin)}
                       </div>
                     </div>
-                    <a
-                      href={getAffiliateUrl(p.slug)}
-                      target="_blank"
-                      rel="sponsored nofollow noopener noreferrer"
-                      className="btn-affiliate w-full text-sm"
-                    >
+                    <AffiliateButton slug={p.slug} className="btn-affiliate w-full text-sm">
                       Ver no Mercado Livre <ExternalLink className="size-4" />
-                    </a>
+                    </AffiliateButton>
                   </div>
                 </article>
               ))}
@@ -296,16 +289,8 @@ function HomePage() {
                 Toda sexta enviamos um resumo curto: quedas de preço no Mercado Livre, novos guias e o que evitar comprar.
               </p>
             </div>
-            <form className="w-full md:w-96 flex gap-2" onSubmit={(e) => e.preventDefault()}>
-              <input
-                type="email"
-                required
-                placeholder="seu@email.com"
-                aria-label="Seu e-mail"
-                className="flex-1 bg-white text-foreground px-4 py-3 rounded-lg border border-hairline outline-none focus:border-accent focus:ring-2 focus:ring-accent/20"
-              />
-              <button type="submit" className="btn-affiliate whitespace-nowrap">Assinar</button>
-            </form>
+            <NewsletterForm className="w-full md:w-96" />
+
           </div>
         </section>
       </main>
