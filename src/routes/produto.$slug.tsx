@@ -4,17 +4,11 @@ import { SiteHeader } from "@/components/site/site-header";
 import { SiteFooter } from "@/components/site/site-footer";
 import { ScoreBadge, BadgeChip } from "@/components/site/score-badge";
 import { ScoreBreakdownGrid } from "@/components/site/score-breakdown";
-import { ProductTile } from "@/components/site/product-tile";
+import { ProductTile, AffiliateButton } from "@/components/site/product-tile";
 import { ProductReviews } from "@/components/site/product-reviews";
 import { findProduct, formatBRL, products, type Product } from "@/lib/mock-data";
-import {
-  getAffiliateUrl,
-  getProductImageUrl,
-  getProductOverrides,
-  getUserProducts,
-  findAnyProduct,
-} from "@/lib/affiliate";
-import { useEffect, useState } from "react";
+import { useCatalog } from "@/context/catalog-context";
+import { useMemo } from "react";
 
 export const Route = createFileRoute("/produto/$slug")({
   loader: ({ params }) => {
