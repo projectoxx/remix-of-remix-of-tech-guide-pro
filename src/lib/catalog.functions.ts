@@ -105,7 +105,7 @@ export const saveUserProduct = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { error } = await supabaseAdmin
       .from("user_products")
-      .upsert({ slug: p.slug, data: p as unknown as Record<string, unknown> });
+      .upsert({ slug: p.slug, data: p as never });
     if (error) throw new Error(error.message);
     return { ok: true };
   });
