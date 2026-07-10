@@ -14,7 +14,111 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      price_alert_subscribers: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          unsubscribed_at: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          unsubscribed_at?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          unsubscribed_at?: string | null
+        }
+        Relationships: []
+      }
+      product_overrides: {
+        Row: {
+          affiliate_url: string | null
+          discount_pct: number | null
+          image_url: string | null
+          offer_label: string | null
+          price_min: number | null
+          price_old: number | null
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          affiliate_url?: string | null
+          discount_pct?: number | null
+          image_url?: string | null
+          offer_label?: string | null
+          price_min?: number | null
+          price_old?: number | null
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          affiliate_url?: string | null
+          discount_pct?: number | null
+          image_url?: string | null
+          offer_label?: string | null
+          price_min?: number | null
+          price_old?: number | null
+          slug?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      reviews: {
+        Row: {
+          author: string
+          comment: string
+          created_at: string
+          id: string
+          product_slug: string
+          rating: number
+          status: string
+        }
+        Insert: {
+          author: string
+          comment: string
+          created_at?: string
+          id?: string
+          product_slug: string
+          rating: number
+          status?: string
+        }
+        Update: {
+          author?: string
+          comment?: string
+          created_at?: string
+          id?: string
+          product_slug?: string
+          rating?: number
+          status?: string
+        }
+        Relationships: []
+      }
+      user_products: {
+        Row: {
+          created_at: string
+          data: Json
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          data: Json
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          data?: Json
+          slug?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
