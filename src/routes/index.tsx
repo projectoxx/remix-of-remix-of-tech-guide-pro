@@ -289,16 +289,8 @@ function HomePage() {
                 Toda sexta enviamos um resumo curto: quedas de preço no Mercado Livre, novos guias e o que evitar comprar.
               </p>
             </div>
-            <form className="w-full md:w-96 flex gap-2" onSubmit={(e) => e.preventDefault()}>
-              <input
-                type="email"
-                required
-                placeholder="seu@email.com"
-                aria-label="Seu e-mail"
-                className="flex-1 bg-white text-foreground px-4 py-3 rounded-lg border border-hairline outline-none focus:border-accent focus:ring-2 focus:ring-accent/20"
-              />
-              <button type="submit" className="btn-affiliate whitespace-nowrap">Assinar</button>
-            </form>
+            <NewsletterForm className="w-full md:w-96" />
+
           </div>
         </section>
       </main>
