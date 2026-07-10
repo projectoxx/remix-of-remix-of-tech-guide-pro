@@ -11,6 +11,8 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { getCatalogSnapshot } from "@/lib/catalog.functions";
+import { CatalogProvider } from "@/context/catalog-context";
 
 function NotFoundComponent() {
   return (
