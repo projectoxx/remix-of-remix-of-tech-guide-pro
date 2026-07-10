@@ -221,14 +221,9 @@ function ProductPage() {
               )}
             </div>
 
-            <a
-              href={getAffiliateUrl(product.slug)}
-              target="_blank"
-              rel="sponsored nofollow noopener noreferrer"
-              className="btn-affiliate w-full text-base"
-            >
+            <AffiliateButton slug={product.slug} className="btn-affiliate w-full text-base">
               Ver oferta no Mercado Livre <ExternalLink className="size-4" />
-            </a>
+            </AffiliateButton>
           </div>
         </section>
 
