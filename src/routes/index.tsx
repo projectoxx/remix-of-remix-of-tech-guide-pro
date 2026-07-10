@@ -30,6 +30,7 @@ export const Route = createFileRoute("/")({
 function HomePage() {
   const featuredGuide = guides[0];
   const featuredProduct = findProduct(featuredGuide.productSlugs[0])!;
+  const { getImage, displayFor } = useCatalog();
 
   // Sub-abas: uma aba por TV específica (respondem "a TV X é boa?")
   const tvGuides = useMemo(
@@ -39,11 +40,8 @@ function HomePage() {
   const [activeTv, setActiveTv] = useState<string>(tvGuides[0]?.slug ?? "");
   const activeGuide = tvGuides.find((g) => g.slug === activeTv) ?? tvGuides[0];
   const activeProduct = activeGuide ? findProduct(activeGuide.productSlugs[0]) : undefined;
-  const [activeProductImg, setActiveProductImg] = useState<string>("");
-  useEffect(() => {
-    if (activeProduct) setActiveProductImg(getProductImageUrl(activeProduct.slug));
-    else setActiveProductImg("");
-  }, [activeProduct?.slug]);
+  const activeProductImg = activeProduct ? getImage(activeProduct.slug) : "";
+  const activeDisplay = activeProduct ? displayFor(activeProduct) : undefined;
 
   const topPicks = productsByCategory("smart-tvs").slice(0, 3);
 
