@@ -166,14 +166,9 @@ function GuidePage() {
                           </div>
                           <div className="text-xs text-muted-foreground">no Mercado Livre</div>
                         </div>
-                        <a
-                          href={p.affiliateUrl}
-                          target="_blank"
-                          rel="sponsored nofollow noopener noreferrer"
-                          className="btn-affiliate w-full text-sm"
-                        >
+                        <AffiliateButton slug={p.slug} className="btn-affiliate w-full text-sm">
                           Ver oferta <ExternalLink className="size-4" />
-                        </a>
+                        </AffiliateButton>
                         <Link
                           to="/produto/$slug"
                           params={{ slug: p.slug }}
