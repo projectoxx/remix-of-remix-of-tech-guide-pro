@@ -3,6 +3,7 @@ import { ArrowRight, ExternalLink, ShieldCheck, Check } from "lucide-react";
 import { SiteHeader } from "@/components/site/site-header";
 import { SiteFooter } from "@/components/site/site-footer";
 import { ScoreBadge } from "@/components/site/score-badge";
+import { AffiliateButton } from "@/components/site/product-tile";
 import {
   findGuide,
   findProduct,
