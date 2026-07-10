@@ -1,72 +1,63 @@
 import { useEffect, useState, type FormEvent } from "react";
-import { Star, MessageCircle } from "lucide-react";
-
-export type Review = {
-  id: string;
-  name: string;
-  rating: number;
-  comment: string;
-  createdAt: string;
-};
-
-const STORAGE_KEY = "techradar.reviews.v1";
-
-function loadAll(): Record<string, Review[]> {
-  if (typeof window === "undefined") return {};
-  try {
-    return JSON.parse(window.localStorage.getItem(STORAGE_KEY) || "{}") as Record<string, Review[]>;
-  } catch {
-    return {};
-  }
-}
-
-function saveAll(data: Record<string, Review[]>) {
-  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-}
-
-export function getReviews(slug: string): Review[] {
-  return loadAll()[slug] ?? [];
-}
-
-export function addReview(slug: string, review: Omit<Review, "id" | "createdAt">) {
-  const all = loadAll();
-  const list = all[slug] ?? [];
-  list.unshift({
-    ...review,
-    id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
-    createdAt: new Date().toISOString(),
-  });
-  all[slug] = list;
-  saveAll(all);
-}
+import { Star, MessageCircle, Loader2 } from "lucide-react";
+import { listReviews, submitReview, type Review } from "@/lib/reviews.functions";
 
 export function ProductReviews({ slug, productName }: { slug: string; productName: string }) {
   const [reviews, setReviews] = useState<Review[]>([]);
+  const [loading, setLoading] = useState(true);
   const [name, setName] = useState("");
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState("");
+  const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
+
+  async function refresh() {
+    try {
+      const rows = await listReviews({ data: { slug } });
+      setReviews(rows);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   useEffect(() => {
-    setReviews(getReviews(slug));
+    setLoading(true);
+    refresh();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [slug]);
 
   const avg = reviews.length
     ? (reviews.reduce((s, r) => s + r.rating, 0) / reviews.length).toFixed(1)
     : null;
 
-  function handleSubmit(e: FormEvent) {
+  async function handleSubmit(e: FormEvent) {
     e.preventDefault();
+    setErr(null);
     const cleanName = name.trim().slice(0, 60);
-    const cleanComment = comment.trim().slice(0, 800);
-    if (!cleanName || !cleanComment) return;
-    addReview(slug, { name: cleanName, rating, comment: cleanComment });
-    setReviews(getReviews(slug));
-    setName("");
-    setComment("");
-    setRating(5);
-    setSent(true);
-    setTimeout(() => setSent(false), 3000);
+    const cleanComment = comment.trim().slice(0, 1000);
+    if (!cleanName || cleanComment.length < 3) {
+      setErr("Preencha nome e comentário (mín. 3 caracteres).");
+      return;
+    }
+    setSending(true);
+    try {
+      await submitReview({
+        data: { slug, rating, author: cleanName, comment: cleanComment },
+      });
+      await refresh();
+      setName("");
+      setComment("");
+      setRating(5);
+      setSent(true);
+      setTimeout(() => setSent(false), 4000);
+    } catch (e) {
+      setErr((e as Error).message || "Não foi possível publicar. Tente novamente.");
+    } finally {
+      setSending(false);
+    }
   }
 
   return (
@@ -82,17 +73,23 @@ export function ProductReviews({ slug, productName }: { slug: string; productNam
           <div className="flex items-center gap-2 bg-highlight/15 px-4 py-2 rounded-full">
             <Star className="size-5 fill-highlight text-highlight" />
             <span className="font-display font-extrabold text-lg tabular-nums">{avg}</span>
-            <span className="text-sm text-muted-foreground">/ 5 · {reviews.length} avaliaç{reviews.length === 1 ? "ão" : "ões"}</span>
+            <span className="text-sm text-muted-foreground">
+              / 5 · {reviews.length} avaliaç{reviews.length === 1 ? "ão" : "ões"}
+            </span>
           </div>
         )}
       </div>
 
-      {reviews.length > 0 ? (
+      {loading ? (
+        <div className="text-sm text-muted-foreground flex items-center gap-2">
+          <Loader2 className="size-4 animate-spin" /> Carregando avaliações…
+        </div>
+      ) : reviews.length > 0 ? (
         <div className="grid gap-4 md:grid-cols-2">
           {reviews.map((r) => (
             <article key={r.id} className="card-lab p-5 rounded-xl space-y-3">
               <div className="flex items-center justify-between">
-                <div className="font-display font-bold text-foreground">{r.name}</div>
+                <div className="font-display font-bold text-foreground">{r.author}</div>
                 <div className="flex gap-0.5" aria-label={`${r.rating} de 5 estrelas`}>
                   {Array.from({ length: 5 }).map((_, i) => (
                     <Star
@@ -105,9 +102,11 @@ export function ProductReviews({ slug, productName }: { slug: string; productNam
                   ))}
                 </div>
               </div>
-              <p className="text-sm text-foreground/80 leading-relaxed whitespace-pre-line">{r.comment}</p>
+              <p className="text-sm text-foreground/80 leading-relaxed whitespace-pre-line">
+                {r.comment}
+              </p>
               <div className="text-[11px] font-mono text-muted-foreground uppercase tracking-widest">
-                {new Date(r.createdAt).toLocaleDateString("pt-BR")}
+                {new Date(r.created_at).toLocaleDateString("pt-BR")}
               </div>
             </article>
           ))}
@@ -134,7 +133,10 @@ export function ProductReviews({ slug, productName }: { slug: string; productNam
 
         <div className="grid md:grid-cols-2 gap-4">
           <div>
-            <label htmlFor="rev-name" className="block text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-2">
+            <label
+              htmlFor="rev-name"
+              className="block text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-2"
+            >
               Seu nome
             </label>
             <input
@@ -164,7 +166,9 @@ export function ProductReviews({ slug, productName }: { slug: string; productNam
                   <Star
                     className={
                       "size-7 transition-colors " +
-                      (n <= rating ? "fill-highlight text-highlight" : "text-muted-foreground/30 hover:text-highlight/60")
+                      (n <= rating
+                        ? "fill-highlight text-highlight"
+                        : "text-muted-foreground/30 hover:text-highlight/60")
                     }
                   />
                 </button>
@@ -174,13 +178,16 @@ export function ProductReviews({ slug, productName }: { slug: string; productNam
         </div>
 
         <div>
-          <label htmlFor="rev-comment" className="block text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-2">
+          <label
+            htmlFor="rev-comment"
+            className="block text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-2"
+          >
             Seu comentário
           </label>
           <textarea
             id="rev-comment"
             required
-            maxLength={800}
+            maxLength={1000}
             rows={4}
             value={comment}
             onChange={(e) => setComment(e.target.value)}
@@ -188,19 +195,26 @@ export function ProductReviews({ slug, productName }: { slug: string; productNam
             placeholder="Como está sendo sua experiência com este produto?"
           />
           <div className="text-[11px] text-muted-foreground mt-1 text-right tabular-nums">
-            {comment.length}/800
+            {comment.length}/1000
           </div>
         </div>
 
         <div className="flex items-center gap-4 flex-wrap">
-          <button type="submit" className="btn-affiliate">
-            Publicar avaliação
+          <button type="submit" disabled={sending} className="btn-affiliate disabled:opacity-60">
+            {sending ? (
+              <>
+                <Loader2 className="size-4 animate-spin" /> Publicando…
+              </>
+            ) : (
+              "Publicar avaliação"
+            )}
           </button>
           {sent && (
             <span className="text-sm text-accent font-semibold">
               Obrigado! Sua avaliação foi publicada.
             </span>
           )}
+          {err && <span className="text-sm text-destructive">{err}</span>}
         </div>
       </form>
     </section>
