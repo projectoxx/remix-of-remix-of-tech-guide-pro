@@ -170,20 +170,20 @@ function HomePage() {
                 </h3>
                 <p className="text-foreground/75 leading-relaxed">{activeGuide.verdict}</p>
                 <div className="flex items-baseline gap-2 pt-2">
+                  {activeDisplay?.priceOld && (
+                    <span className="text-sm text-muted-foreground line-through">
+                      {formatBRL(activeDisplay.priceOld)}
+                    </span>
+                  )}
                   <span className="font-display font-extrabold text-2xl text-foreground">
-                    {formatBRL(activeProduct.priceMin)}
+                    {formatBRL(activeDisplay?.priceMin ?? activeProduct.priceMin)}
                   </span>
-                  <span className="text-xs text-muted-foreground">preço médio no Mercado Livre</span>
+                  <span className="text-xs text-muted-foreground">preço no Mercado Livre</span>
                 </div>
                 <div className="flex flex-wrap gap-3 pt-2">
-                  <a
-                    href={getAffiliateUrl(activeProduct.slug)}
-                    target="_blank"
-                    rel="sponsored nofollow noopener noreferrer"
-                    className="btn-affiliate"
-                  >
+                  <AffiliateButton slug={activeProduct.slug}>
                     Ver no Mercado Livre <ExternalLink className="size-4" />
-                  </a>
+                  </AffiliateButton>
                   <Link
                     to="/guia/$slug"
                     params={{ slug: activeGuide.slug }}
