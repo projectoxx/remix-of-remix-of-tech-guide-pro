@@ -227,14 +227,9 @@ function HomePage() {
                         {formatBRL(p.priceMin)}
                       </div>
                     </div>
-                    <a
-                      href={getAffiliateUrl(p.slug)}
-                      target="_blank"
-                      rel="sponsored nofollow noopener noreferrer"
-                      className="btn-affiliate w-full text-sm"
-                    >
+                    <AffiliateButton slug={p.slug} className="btn-affiliate w-full text-sm">
                       Ver no Mercado Livre <ExternalLink className="size-4" />
-                    </a>
+                    </AffiliateButton>
                   </div>
                 </article>
               ))}
