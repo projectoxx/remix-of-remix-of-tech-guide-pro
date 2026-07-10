@@ -11,6 +11,7 @@ import {
 import { SiteHeader } from "@/components/site/site-header";
 import { SiteFooter } from "@/components/site/site-footer";
 import { SectionHeader } from "@/components/site/section-header";
+import { AffiliateButton } from "@/components/site/product-tile";
 import {
   categories,
   formatBRL,
@@ -19,9 +20,8 @@ import {
   findProduct,
   productsByCategory,
 } from "@/lib/mock-data";
-import { getAffiliateUrl } from "@/lib/affiliate";
-import { getProductImageUrl } from "@/lib/affiliate";
-import { useEffect } from "react";
+import { useCatalog } from "@/context/catalog-context";
+import { NewsletterForm } from "@/components/site/newsletter-form";
 
 export const Route = createFileRoute("/")({
   component: HomePage,
